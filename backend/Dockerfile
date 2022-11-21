@@ -13,12 +13,13 @@ RUN apt-get -q update && \
         curl \
         git
 
-RUN adduser --home ${HOME} --shell /bin/bash ${USERNAME}
+RUN adduser --home ${HOME} --shell /bin/bash ${USERNAME} \
+    && echo "${USERNAME}  ALL=(ALL) NOPASSWD:ALL" | tee "/etc/sudoers.d/${USERNAME}"
 
-RUN mkdir /backend
+WORKDIR ${HOME}
 COPY . ./
 # Install Rpi.GPIO
-RUN pip install -r requirements.txt
+RUN pip install -r app/requirements.txt
 
 # Download the SPI-Py project source files
 RUN git clone https://github.com/lthiery/SPI-Py.git
@@ -27,7 +28,6 @@ RUN git clone https://github.com/lthiery/SPI-Py.git
 RUN cd SPI-Py && python setup.py install
 
 # Directory where python app will run
-WORKDIR ${HOME}
 USER ${USERNAME}
 EXPOSE 8000
 CMD ["python", "main.py"]
