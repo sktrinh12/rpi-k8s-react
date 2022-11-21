@@ -13,7 +13,7 @@ RUN apt-get -q update && \
         curl \
         git
 
-RUN adduser --home ${HOME} --shell /bin/bash ${USERNAME} \
+RUN apt-get -yq install sudo && adduser --home ${HOME} --shell /bin/bash ${USERNAME} \
     && echo "${USERNAME}  ALL=(ALL) NOPASSWD:ALL" | tee "/etc/sudoers.d/${USERNAME}"
 
 WORKDIR ${HOME}
