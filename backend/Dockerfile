@@ -13,7 +13,7 @@ RUN apt-get -q update && \
         curl \
         git
 
-RUN adduser --home ${HOME} --shell /bin/bash ${USERNAME} \
+RUN adduser --home ${HOME} --shell /bin/bash ${USERNAME}
 
 RUN mkdir /backend
 COPY . ./
