@@ -1,17 +1,19 @@
 FROM arm64v8/ubuntu:latest
 
-RUN apt-get -q update && \  
+RUN apt-get -q update && \
     apt-get -qy install \
         python-is-python3 \
         python-dev-is-python3\
         python3-pip \
         gcc \
         make \
-	curl \
-	git
+        curl \
+        git
 
+RUN mkdir /backend
+COPY . ./
 # Install Rpi.GPIO
-RUN pip install rpi.gpio smbus
+RUN pip install -r requirements.txt
 
 # Download the SPI-Py project source files
 RUN git clone https://github.com/lthiery/SPI-Py.git
@@ -20,5 +22,4 @@ RUN git clone https://github.com/lthiery/SPI-Py.git
 RUN cd SPI-Py && python setup.py install
 
 # Directory where python app will run
-RUN mkdir /app
-WORKDIR /app
+WORKDIR /backend
