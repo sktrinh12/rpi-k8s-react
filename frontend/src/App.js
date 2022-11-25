@@ -66,8 +66,8 @@ function App() {
           onClick={svgOnClick}
         />
         <button
-          className="button-style"
           onClick={onClickSubmit}
+          className="button-3d"
           ref={submitStringsRef}
         >
           Submit
