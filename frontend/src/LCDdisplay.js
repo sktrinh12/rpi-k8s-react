@@ -1,15 +1,16 @@
 import React from "react";
 
-const LCDdisplay = ({ className }) => {
+const LCDdisplay = ({ className, stringTop, stringBottom, onClick }) => {
   return (
     <svg
       className={className}
       xmlns="http://www.w3.org/2000/svg"
       version="1.1"
-      // viewBox="0 0 60 27"
-      viewBox="-10 -10 80 50"
+      viewBox="0 0 60 27"
+      // viewBox="-10 -10 80 50"
       width="400"
       id="svg15051"
+      onClick={onClick}
     >
       <defs id="defs409" />
 
@@ -49,13 +50,6 @@ const LCDdisplay = ({ className }) => {
                 id="path14403"
                 fill="#87ad34"
               />
-              <g id="g14407" opacity="0.2">
-                <path
-                  d="m 267.68,307.975 v 40.754 l 0.004,-0.019 V 307.993 Z M 81.144,303.982 c -2.205,0 -4.011,1.806 -4.011,4.011 v 40.717 c 0,2.205 1.806,4.011 4.011,4.011 h 2.326 c -2.206,0 -4.011,-1.806 -4.011,-4.011 v -39.379 c 0,-2.206 1.805,-4.011 4.011,-4.011 h 183.165 c -0.734,-0.814 -1.785,-1.338 -2.964,-1.338 z"
-                  id="path14405"
-                  fill="#22420d"
-                />
-              </g>
             </g>
             <g id="g14415">
               <path
@@ -180,152 +174,360 @@ const LCDdisplay = ({ className }) => {
                 id="path14471"
               />
             </g>
-            <g>
+            <g id="g14539" fill="#1a1a1a" fillOpacity="0.2">
               <path
-                d="M 86.813,328.697 H 160.422"
-                stroke="#F9429E"
-                id="test123"
+                d="M 86.813,328.697 H 96.84 V 345.22 H 86.813 Z"
+                id="path14475"
               />
-              <text font-size="20">
-                <textPath
-                  href="#test123"
-                  textAnchor="start"
-                  dominantBaseline="auto"
-                >
-                  TEST
-                </textPath>
+              <text
+                fontSize="18"
+                textAnchor="start"
+                transform="translate(1.5, 13.75)"
+              >
+                <textPath href="#path14475">{stringBottom[0] || ""}</textPath>
               </text>
-            </g>
-            <g id="g14539" fill="#1a1a1a" fillOpacity="0.1">
-              {/* <path */}
-              {/*    d="M 86.813,328.697 H 96.84 V 345.22 H 86.813 Z" */}
-              {/*    id="path14475" */}
-              {/*    /> */}
               <path
                 d="m 97.558,328.697 h 10.027 V 345.22 H 97.558 Z"
                 id="path14477"
               />
+              <text
+                fontSize="18"
+                textAnchor="start"
+                transform="translate(1.5, 13.75)"
+              >
+                <textPath href="#path14477">{stringBottom[1] || ""}</textPath>
+              </text>
               <path
                 d="m 108.302,328.697 h 10.027 v 16.523 h -10.027 z"
                 id="path14479"
               />
+              <text
+                fontSize="18"
+                textAnchor="start"
+                transform="translate(1.5, 13.75)"
+              >
+                <textPath href="#path14479">{stringBottom[2] || ""}</textPath>
+              </text>
               <path
                 d="m 119.045,328.697 h 10.028 v 16.523 h -10.028 z"
                 id="path14481"
               />
+              <text
+                fontSize="18"
+                textAnchor="start"
+                transform="translate(1.5, 13.75)"
+              >
+                <textPath href="#path14481">{stringBottom[3] || ""}</textPath>
+              </text>
               <path
                 d="m 129.792,328.697 h 10.027 v 16.523 h -10.027 z"
                 id="path14483"
               />
+              <text
+                fontSize="18"
+                textAnchor="start"
+                transform="translate(1.5, 13.75)"
+              >
+                <textPath href="#path14483">{stringBottom[4] || ""}</textPath>
+              </text>
               <path
                 d="m 140.536,328.697 h 10.026 v 16.523 h -10.026 z"
                 id="path14485"
               />
+              <text
+                fontSize="18"
+                textAnchor="start"
+                transform="translate(1.5, 13.75)"
+              >
+                <textPath href="#path14485">{stringBottom[5] || ""}</textPath>
+              </text>
               <path
                 d="m 151.279,328.697 h 10.027 v 16.523 h -10.027 z"
                 id="path14487"
               />
+              <text
+                fontSize="18"
+                textAnchor="start"
+                transform="translate(1.5, 13.75)"
+              >
+                <textPath href="#path14487">{stringBottom[6] || ""}</textPath>
+              </text>
               <path
                 d="m 162.023,328.697 h 10.025 v 16.523 h -10.025 z"
                 id="path14489"
               />
+              <text
+                fontSize="18"
+                textAnchor="start"
+                transform="translate(1.5, 13.75)"
+              >
+                <textPath href="#path14489">{stringBottom[7] || ""}</textPath>
+              </text>
               <path
                 d="m 172.768,328.697 h 10.027 v 16.523 h -10.027 z"
                 id="path14491"
               />
+              <text
+                fontSize="18"
+                textAnchor="start"
+                transform="translate(1.5, 13.75)"
+              >
+                <textPath href="#path14491">{stringBottom[8] || ""}</textPath>
+              </text>
               <path
                 d="m 183.514,328.697 h 10.025 v 16.523 h -10.025 z"
                 id="path14493"
               />
+              <text
+                fontSize="18"
+                textAnchor="start"
+                transform="translate(1.5, 13.75)"
+              >
+                <textPath href="#path14493">{stringBottom[9] || ""}</textPath>
+              </text>
               <path
                 d="m 194.256,328.697 h 10.027 v 16.523 h -10.027 z"
                 id="path14495"
               />
+              <text
+                fontSize="18"
+                textAnchor="start"
+                transform="translate(1.75, 13.75)"
+              >
+                <textPath href="#path14495">{stringBottom[10] || ""}</textPath>
+              </text>
               <path
                 d="m 205,328.697 h 10.027 V 345.22 H 205 Z"
                 id="path14497"
               />
+              <text
+                fontSize="18"
+                textAnchor="start"
+                transform="translate(1.75, 13.75)"
+              >
+                <textPath href="#path14497">{stringBottom[11] || ""}</textPath>
+              </text>
               <path
                 d="m 215.744,328.697 h 10.027 v 16.523 h -10.027 z"
                 id="path14499"
               />
+              <text
+                fontSize="18"
+                textAnchor="start"
+                transform="translate(1.75, 13.75)"
+              >
+                <textPath href="#path14499">{stringBottom[12] || ""}</textPath>
+              </text>
               <path
                 d="m 226.488,328.697 h 10.027 v 16.523 h -10.027 z"
                 id="path14501"
               />
+              <text
+                fontSize="18"
+                textAnchor="start"
+                transform="translate(1.75, 13.75)"
+              >
+                <textPath href="#path14501">{stringBottom[13] || ""}</textPath>
+              </text>
               <path
                 d="m 237.232,328.697 h 10.025 v 16.523 h -10.025 z"
                 id="path14503"
               />
-              {/* end of bottom row (right)*/}
+              <text
+                fontSize="18"
+                textAnchor="start"
+                transform="translate(1.75, 13.75)"
+              >
+                <textPath href="#path14503">{stringBottom[14] || ""}</textPath>
+              </text>
               <path
                 d="m 247.979,328.697 h 10.025 v 16.523 h -10.025 z"
                 id="path14505"
               />
+              <text
+                fontSize="18"
+                textAnchor="start"
+                transform="translate(1.75, 13.75)"
+              >
+                <textPath href="#path14505">{stringBottom[15] || ""}</textPath>
+              </text>
+              {/* end of bottom row (right)*/}
               <path
                 d="M 86.813,311.482 H 96.84 v 16.521 H 86.813 Z"
                 id="path14507"
               />
+              <text
+                fontSize="18"
+                textAnchor="start"
+                transform="translate(1.75, 13.75)"
+              >
+                <textPath href="#path14507">{stringTop[0] || ""}</textPath>
+              </text>
               <path
                 d="m 97.558,311.482 h 10.027 v 16.521 H 97.558 Z"
                 id="path14509"
               />
+              <text
+                fontSize="18"
+                textAnchor="start"
+                transform="translate(1.75, 13.75)"
+              >
+                <textPath href="#path14509">{stringTop[1] || ""}</textPath>
+              </text>
               <path
                 d="m 108.302,311.482 h 10.027 v 16.521 h -10.027 z"
                 id="path14511"
               />
+              <text
+                fontSize="18"
+                textAnchor="start"
+                transform="translate(1.75, 13.75)"
+              >
+                <textPath href="#path14511">{stringTop[2] || ""}</textPath>
+              </text>
               <path
                 d="m 119.045,311.482 h 10.028 v 16.521 h -10.028 z"
                 id="path14513"
               />
+              <text
+                fontSize="18"
+                textAnchor="start"
+                transform="translate(1.75, 13.75)"
+              >
+                <textPath href="#path14513">{stringTop[3] || ""}</textPath>
+              </text>
               <path
                 d="m 129.792,311.482 h 10.027 v 16.521 h -10.027 z"
                 id="path14515"
               />
+              <text
+                fontSize="18"
+                textAnchor="start"
+                transform="translate(1.75, 13.75)"
+              >
+                <textPath href="#path14515">{stringTop[4] || ""}</textPath>
+              </text>
               <path
                 d="m 140.536,311.482 h 10.026 v 16.521 h -10.026 z"
                 id="path14517"
               />
+              <text
+                fontSize="18"
+                textAnchor="start"
+                transform="translate(1.75, 13.75)"
+              >
+                <textPath href="#path14517">{stringTop[5] || ""}</textPath>
+              </text>
               <path
                 d="m 151.279,311.482 h 10.027 v 16.521 h -10.027 z"
                 id="path14519"
               />
+              <text
+                fontSize="18"
+                textAnchor="start"
+                transform="translate(1.75, 13.75)"
+              >
+                <textPath href="#path14519">{stringTop[6] || ""}</textPath>
+              </text>
               <path
                 d="m 162.023,311.482 h 10.025 v 16.521 h -10.025 z"
                 id="path14521"
               />
+              <text
+                fontSize="18"
+                textAnchor="start"
+                transform="translate(1.75, 13.75)"
+              >
+                <textPath href="#path14521">{stringTop[7] || ""}</textPath>
+              </text>
               <path
                 d="m 172.768,311.482 h 10.027 v 16.521 h -10.027 z"
                 id="path14523"
               />
+              <text
+                fontSize="18"
+                textAnchor="start"
+                transform="translate(1.75, 13.75)"
+              >
+                <textPath href="#path14523">{stringTop[8] || ""}</textPath>
+              </text>
               <path
                 d="m 183.514,311.482 h 10.025 v 16.521 h -10.025 z"
                 id="path14525"
               />
+              <text
+                fontSize="18"
+                textAnchor="start"
+                transform="translate(1.75, 13.75)"
+              >
+                <textPath href="#path14525">{stringTop[9] || ""}</textPath>
+              </text>
               <path
                 d="m 194.256,311.482 h 10.027 v 16.521 h -10.027 z"
                 id="path14527"
               />
+              <text
+                fontSize="18"
+                textAnchor="start"
+                transform="translate(1.75, 13.75)"
+              >
+                <textPath href="#path14527">{stringTop[10] || ""}</textPath>
+              </text>
               <path
                 d="m 205,311.482 h 10.027 v 16.521 H 205 Z"
                 id="path14529"
               />
+              <text
+                fontSize="18"
+                textAnchor="start"
+                transform="translate(1.75, 13.75)"
+              >
+                <textPath href="#path14529">{stringTop[11] || ""}</textPath>
+              </text>
               <path
                 d="m 215.744,311.482 h 10.027 v 16.521 h -10.027 z"
                 id="path14531"
               />
+              <text
+                fontSize="18"
+                textAnchor="start"
+                transform="translate(1.75, 13.75)"
+              >
+                <textPath href="#path14531">{stringTop[12] || ""}</textPath>
+              </text>
               <path
                 d="m 226.488,311.482 h 10.027 v 16.521 h -10.027 z"
                 id="path14533"
               />
+              <text
+                fontSize="18"
+                textAnchor="start"
+                transform="translate(1.75, 13.75)"
+              >
+                <textPath href="#path14533">{stringTop[13] || ""}</textPath>
+              </text>
               <path
                 d="m 237.232,311.482 h 10.025 v 16.521 h -10.025 z"
                 id="path14535"
               />
+              <text
+                fontSize="18"
+                textAnchor="start"
+                transform="translate(1.75, 13.75)"
+              >
+                <textPath href="#path14535">{stringTop[14] || ""}</textPath>
+              </text>
               <path
                 d="m 247.979,311.482 h 10.025 v 16.521 h -10.025 z"
                 id="path14537"
               />
+              <text
+                fontSize="18"
+                textAnchor="start"
+                transform="translate(1.75, 13.75)"
+              >
+                <textPath href="#path14537">{stringTop[15] || ""}</textPath>
+              </text>
             </g>
             <g id="g14545" fill="#606060">
               <path
