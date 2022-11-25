@@ -3,8 +3,66 @@
 }
 
 .lcd-class {
-  border-style: solid;
-  border-color: red;
+  font-family: digital-display;
+  cursor: pointer;
+}
+
+/* svg { */
+/*   pointer-events: none; */
+/* } */
+
+/* path { */
+/*   pointer-events: auto; */
+/* } */
+
+.App-header .header-style {
+  /* color: #aedaee; */
+  font-size: 3.5em;
+  height: 100%;
+  margin-top: -100px;
+  margin-bottom: 75px;
+  /* border: 1px solid red; */
+  align-items: center;
+}
+
+.App-header .text-copy {
+  fill: none;
+  stroke: white;
+  stroke-dasharray: 6% 29%;
+  stroke-width: 5px;
+  stroke-dashoffset: 0%;
+  animation: stroke-offset 5.5s infinite linear;
+}
+
+.App-header .text-copy:nth-child(1) {
+  stroke: #ee9f1c;
+  animation-delay: -1;
+}
+
+.App-header .text-copy:nth-child(2) {
+  stroke: #ffe9c8;
+  animation-delay: -2s;
+}
+
+.App-header .text-copy:nth-child(3) {
+  stroke: #ee9f1c;
+  animation-delay: -3s;
+}
+
+.App-header .text-copy:nth-child(4) {
+  stroke: #aedaee;
+  animation-delay: -4s;
+}
+
+.App-header .text-copy:nth-child(5) {
+  stroke: #30c0bd;
+  animation-delay: -5s;
+}
+
+@keyframes stroke-offset {
+  100% {
+    stroke-dashoffset: -35%;
+  }
 }
 
 .App-header {
@@ -16,4 +74,52 @@
   justify-content: center;
   font-size: calc(10px + 2vmin);
   color: white;
+}
+
+.App input {
+  /* margin: 4px; */
+  opacity: 0;
+  /* background: #000; */
+  background: transparent;
+  border: none;
+  outline: none;
+  cursor: default;
+  /* position: absolute; */
+}
+
+.button-style {
+  position: relative;
+  background-color: #30c0bd;
+  border: none;
+  font-size: 22px;
+  color: #aedaee;
+  padding: 16px;
+  margin-top: 20px;
+  width: 125px;
+  border-radius: 4px;
+  text-align: center;
+  transition-duration: 0.4s;
+  text-decoration: none;
+  overflow: hidden;
+  cursor: pointer;
+}
+
+.button-style:after {
+  content: "";
+  background: #ee9f1c;
+  display: block;
+  position: absolute;
+  padding-top: 300%;
+  padding-left: 350%;
+  margin-left: -20px !important;
+  margin-top: -120%;
+  opacity: 0;
+  transition: all 0.8s;
+}
+
+.button-style:active:after {
+  padding: 0;
+  margin: 0;
+  opacity: 1;
+  transition: 0s;
 }
