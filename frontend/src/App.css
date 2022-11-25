@@ -4,7 +4,7 @@
 
 .lcd-class {
   font-family: digital-display;
-  cursor: pointer;
+  cursor: text;
 }
 
 /* svg { */
@@ -32,6 +32,7 @@
   stroke-width: 5px;
   stroke-dashoffset: 0%;
   animation: stroke-offset 5.5s infinite linear;
+  cursor: default;
 }
 
 .App-header .text-copy:nth-child(1) {
@@ -87,39 +88,35 @@
   /* position: absolute; */
 }
 
-.button-style {
+.button-3d {
   position: relative;
-  background-color: #30c0bd;
-  border: none;
+  width: auto;
+  text-decoration: none;
+  border-radius: 5px;
+  border: solid 1px #aedaee;
+  background: #30c0bd;
+  text-align: center;
+  padding: 16px 18px 14px;
   font-size: 22px;
   color: #aedaee;
-  padding: 16px;
   margin-top: 20px;
   width: 125px;
-  border-radius: 4px;
-  text-align: center;
-  transition-duration: 0.4s;
-  text-decoration: none;
-  overflow: hidden;
+
   cursor: pointer;
+  -webkit-transition: all 0.1s;
+  -moz-transition: all 0.1s;
+  transition: all 0.1s;
+
+  -webkit-box-shadow: 0px 6px 0px #30c0bd;
+  -moz-box-shadow: 0px 6px 0px #30c0bd;
+  box-shadow: 0px 6px 0px #269997;
 }
 
-.button-style:after {
-  content: "";
+.button-3d:active {
+  -webkit-box-shadow: 0px 2px 0px #30c0bd;
+  -moz-box-shadow: 0px 2px 0px #30c0bd;
+  box-shadow: 0px 2px 0px #30c0bd;
+  position: relative;
+  top: 4px;
   background: #ee9f1c;
-  display: block;
-  position: absolute;
-  padding-top: 300%;
-  padding-left: 350%;
-  margin-left: -20px !important;
-  margin-top: -120%;
-  opacity: 0;
-  transition: all 0.8s;
-}
-
-.button-style:active:after {
-  padding: 0;
-  margin: 0;
-  opacity: 1;
-  transition: 0s;
 }
