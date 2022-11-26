@@ -7,6 +7,16 @@
   cursor: text;
 }
 
+.lcd-class:hover .text-cursor {
+  animation: blinker 0.75s linear infinite;
+}
+
+@keyframes blinker {
+  50% {
+    opacity: 0.1;
+  }
+}
+
 /* svg { */
 /*   pointer-events: none; */
 /* } */
