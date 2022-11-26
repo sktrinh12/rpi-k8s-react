@@ -11,7 +11,7 @@ function App() {
   const stringTopRef = useRef(null);
   const stringBottomRef = useRef(null);
   const submitStringsRef = useRef(null);
-  const baseURL = "http://192.168.1.21:8000/lcd";
+  const baseURL = "http://192.168.1.21:31000/lcd";
 
   useEffect(() => {
     stringTopRef.current.focus();
