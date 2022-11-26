@@ -5,9 +5,11 @@ metadata:
   namespace: rpi-lcd
 spec:
   type: NodePort
+  selector: 
+    tier: backend
+    component: rpi-lcd
   ports: 
     - port: 8000
       targetPort: 8000
       protocol: TCP
-  selector: 
-    component: rpi-lcd
+      nodePort: 31000

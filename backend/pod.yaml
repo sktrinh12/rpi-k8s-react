@@ -5,6 +5,7 @@ metadata:
   namespace: rpi-lcd 
   labels:
     component: rpi-lcd
+    tier: backend
 spec:
   containers:
     - name: rpi-container 
