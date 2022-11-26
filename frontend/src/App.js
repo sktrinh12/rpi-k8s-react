@@ -11,7 +11,7 @@ function App() {
   const stringTopRef = useRef(null);
   const stringBottomRef = useRef(null);
   const submitStringsRef = useRef(null);
-  const baseURL = "192.168.1.21:8000/lcd";
+  const baseURL = "http://192.168.1.21:8000/lcd";
 
   useEffect(() => {
     stringTopRef.current.focus();
@@ -42,9 +42,9 @@ function App() {
 
   let getResponse = async () => {
     try {
-      let fetched = await fetch(
-        `${baseURL}?string_top=${stringTop}&string_bottom=${stringBottom}&delay=30`
-      );
+      const backendURL = `${baseURL}?string_top=${stringTop}&string_bottom=${stringBottom}&delay=0`;
+      console.log(backendURL);
+      let fetched = await fetch(backendURL);
       if (fetched) {
         let json = await fetched.json();
         console.log(json);
@@ -55,7 +55,7 @@ function App() {
     }
   };
 
-  const onClickSubmit = (e) => {
+  const onClickSubmit = () => {
     console.log(
       `Form submitted: ${stringTop} <-> ${stringTopRef.current.value} & ${stringBottom} <-> ${stringBottomRef.current.value}`
     );
@@ -96,7 +96,10 @@ function App() {
         >
           Submit
         </button>
-        <p>Type in text to see it appear on the LCD display!</p>
+        <p>
+          Type in two sentences each with maximum of 16 characters to see it
+          appear on the LCD display!
+        </p>
       </header>
     </div>
   );
