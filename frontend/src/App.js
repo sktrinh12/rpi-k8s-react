@@ -11,7 +11,11 @@ function App() {
   const stringTopRef = useRef(null);
   const stringBottomRef = useRef(null);
   const submitStringsRef = useRef(null);
-  const baseURL = "http://k8s-main:31000/lcd";
+  const baseURL = "http://k8s-main:";
+  const nodes = ["worker1", "worker2"];
+  const [workerNode, setWorkerNode] = useState(nodes[0]);
+
+  const workerPorts = { worker1: "31000", worker2: "31500", worker3: "31700" };
 
   useEffect(() => {
     stringTopRef.current.focus();
@@ -36,13 +40,17 @@ function App() {
     setOnStringBottom(true);
   };
 
+  const handleDropdownChange = (e) => {
+    setWorkerNode(e.target.value);
+  };
+
   const svgOnClick = () => {
     stringTopRef.current.focus();
   };
 
   let getResponse = async () => {
     try {
-      const backendURL = `${baseURL}?string_top=${stringTop}&string_bottom=${stringBottom}&delay=0`;
+      const backendURL = `${baseURL}${workerPorts[workerNode]}/lcd?string_top=${stringTop}&string_bottom=${stringBottom}&delay=0`;
       console.log(backendURL);
       let fetched = await fetch(backendURL);
       if (fetched) {
@@ -57,7 +65,7 @@ function App() {
 
   const onClickSubmit = () => {
     console.log(
-      `Form submitted: ${stringTop} <-> ${stringTopRef.current.value} & ${stringBottom} <-> ${stringBottomRef.current.value}`
+      `Form submitted: ${stringTop} <-> ${stringTopRef.current.value} & ${stringBottom} <-> ${stringBottomRef.current.value} | ${workerNode}`
     );
     getResponse();
   };
@@ -69,6 +77,18 @@ function App() {
           className="header-style"
           title="Raspberry Pi LCD Display"
         ></Title>
+        <div className="dropdown-style">
+          <label htmlFor="nodes">Worker Nodes</label>
+          <select name="nodes" onChange={handleDropdownChange}>
+            {nodes.map((n, i) => {
+              return (
+                <option key={i} value={n}>
+                  {n}
+                </option>
+              );
+            })}
+          </select>
+        </div>
         <Input
           type="text"
           onChange={stringTopChange}
