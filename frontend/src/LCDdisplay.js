@@ -1,6 +1,16 @@
 import React from "react";
 
-const LCDdisplay = ({ className, stringTop, stringBottom, onClick }) => {
+const LCDdisplay = ({
+  className,
+  stringTop,
+  stringBottom,
+  onClick,
+  onStringBottom,
+}) => {
+  const stringTopLength = stringTop.length === 0 ? 1 : stringTop.length;
+  const stringBottomLength =
+    stringBottom.length === 0 ? 1 : stringBottom.length;
+
   return (
     <svg
       className={className}
@@ -175,6 +185,21 @@ const LCDdisplay = ({ className, stringTop, stringBottom, onClick }) => {
               />
             </g>
             <g id="g14539" fill="#1a1a1a" fillOpacity="0.2">
+              {/* the cursor */}
+              {onStringBottom && (
+                <text
+                  fontSize="22"
+                  textAnchor="start"
+                  transform="translate(5.5, 15.5)"
+                  className="text-cursor"
+                >
+                  <textPath
+                    href={`#path${14475 + 2 * (stringBottomLength - 1)}`}
+                  >
+                    |
+                  </textPath>
+                </text>
+              )}
               <path
                 d="M 86.813,328.697 H 96.84 V 345.22 H 86.813 Z"
                 id="path14475"
@@ -352,6 +377,18 @@ const LCDdisplay = ({ className, stringTop, stringBottom, onClick }) => {
                 <textPath href="#path14505">{stringBottom[15] || ""}</textPath>
               </text>
               {/* end of bottom row (right)*/}
+              {!onStringBottom && (
+                <text
+                  fontSize="22"
+                  textAnchor="start"
+                  transform="translate(5.5, 15.5)"
+                  className="text-cursor"
+                >
+                  <textPath href={`#path${14507 + 2 * (stringTopLength - 1)}`}>
+                    |
+                  </textPath>
+                </text>
+              )}
               <path
                 d="M 86.813,311.482 H 96.84 v 16.521 H 86.813 Z"
                 id="path14507"
