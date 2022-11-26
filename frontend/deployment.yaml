@@ -1,0 +1,24 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: rpi-lcd-react
+  labels:
+    name: rpi-lcd-react
+    tier: frontend
+  namespace: rpi-lcd
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: rpi-lcd-react
+      tier: frontend
+  template:
+    metadata:
+      labels:
+        app: rpi-lcd-react
+        tier: frontend
+    spec:
+      containers:
+      - name: rpi-lcd-react
+        image: sktrinh12/rpi-lcd-react:latest
+      restartPolicy: Always
