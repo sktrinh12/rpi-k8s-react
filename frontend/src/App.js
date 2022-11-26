@@ -7,12 +7,15 @@ import "./App.css";
 function App() {
   const [stringTop, setStringTop] = useState("ABCDEFGHIJKLMNOP");
   const [stringBottom, setStringBottom] = useState("1234567890ABCDEF");
+  const [onStringBottom, setOnStringBottom] = useState(false);
   const stringTopRef = useRef(null);
   const stringBottomRef = useRef(null);
   const submitStringsRef = useRef(null);
+  const baseURL = "192.168.1.21:8000/lcd";
 
   useEffect(() => {
     stringTopRef.current.focus();
+    setOnStringBottom(false);
   }, []);
 
   const stringTopOnEnter = (e) => {
@@ -24,21 +27,39 @@ function App() {
   const stringTopChange = (e) => {
     e.preventDefault();
     setStringTop(e.target.value);
+    setOnStringBottom(false);
   };
 
   const stringBottomChange = (e) => {
     e.preventDefault();
     setStringBottom(e.target.value);
+    setOnStringBottom(true);
   };
 
   const svgOnClick = () => {
     stringTopRef.current.focus();
   };
 
+  let getResponse = async () => {
+    try {
+      let fetched = await fetch(
+        `${baseURL}?string_top=${stringTop}&string_bottom=${stringBottom}&delay=30`
+      );
+      if (fetched) {
+        let json = await fetched.json();
+        console.log(json);
+        return json;
+      }
+    } catch (error) {
+      throw new Error(error.message);
+    }
+  };
+
   const onClickSubmit = (e) => {
     console.log(
       `Form submitted: ${stringTop} <-> ${stringTopRef.current.value} & ${stringBottom} <-> ${stringBottomRef.current.value}`
     );
+    getResponse();
   };
 
   return (
@@ -53,17 +74,20 @@ function App() {
           onChange={stringTopChange}
           onKeyDown={stringTopOnEnter}
           ref={stringTopRef}
+          value={stringTop}
         />
         <Input
           type="text"
           onChange={stringBottomChange}
           ref={stringBottomRef}
+          value={stringBottom}
         />
         <LCDdisplay
           className="lcd-class"
           stringTop={stringTop}
           stringBottom={stringBottom}
           onClick={svgOnClick}
+          onStringBottom={onStringBottom}
         />
         <button
           onClick={onClickSubmit}
