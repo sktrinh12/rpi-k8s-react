@@ -54,7 +54,7 @@ function App() {
         svgY.toPrecision(3)
       )}`
     );
-    if (svgY >= 14) {
+    if (svgY >= 80) {
       stringBottomRef.current.focus();
       setOnStringBottom(true);
     } else {
@@ -68,13 +68,16 @@ function App() {
     let point = svgRef.current.createSVGPoint();
     point.x = e.clientX;
     point.y = e.clientY;
+    let bound = svgRef.current.getBoundingClientRect();
+    setSvgX(point.x - bound.left - svgRef.current.clientLeft);
+    setSvgY(point.y - bound.top - svgRef.current.clientTop);
     // eslint-disable-next-line
     {
       /*getScreenCTM method of the svg element, which returns the transformation matrix from the svg's coordinates to screen coordinates. The inverse of that matrix will transform screen coordinates to the svg coordinate system, and we can apply that transformation matrix to the mouse coordinates*/
     }
-    let cursor = point.matrixTransform(svgRef.current.getScreenCTM().inverse());
-    setSvgX(cursor.x);
-    setSvgY(cursor.y);
+    // let cursor = point.matrixTransform(svgRef.current.getScreenCTM().inverse());
+    // setSvgX(cursor.x);
+    // setSvgY(cursor.y);
   };
 
   let getResponse = async () => {
