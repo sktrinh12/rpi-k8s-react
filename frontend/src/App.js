@@ -8,6 +8,9 @@ function App() {
   const [stringTop, setStringTop] = useState("ABCDEFGHIJKLMNOP");
   const [stringBottom, setStringBottom] = useState("1234567890ABCDEF");
   const [onStringBottom, setOnStringBottom] = useState(false);
+  const [svgX, setSvgX] = useState(0);
+  const [svgY, setSvgY] = useState(0);
+  const svgRef = useRef(null);
   const stringTopRef = useRef(null);
   const stringBottomRef = useRef(null);
   const submitStringsRef = useRef(null);
@@ -44,8 +47,34 @@ function App() {
     setWorkerNode(e.target.value);
   };
 
-  const svgOnClick = () => {
-    stringTopRef.current.focus();
+  const svgOnClick = (e) => {
+    getSVGCoordinates(e);
+    console.log(
+      `X: ${parseFloat(svgX.toPrecision(3))}; Y: ${parseFloat(
+        svgY.toPrecision(3)
+      )}`
+    );
+    if (svgY >= 14) {
+      stringBottomRef.current.focus();
+      setOnStringBottom(true);
+    } else {
+      stringTopRef.current.focus();
+      setOnStringBottom(false);
+    }
+  };
+
+  const getSVGCoordinates = (e) => {
+    e.preventDefault();
+    let point = svgRef.current.createSVGPoint();
+    point.x = e.clientX;
+    point.y = e.clientY;
+    // eslint-disable-next-line
+    {
+      /*getScreenCTM method of the svg element, which returns the transformation matrix from the svg's coordinates to screen coordinates. The inverse of that matrix will transform screen coordinates to the svg coordinate system, and we can apply that transformation matrix to the mouse coordinates*/
+    }
+    let cursor = point.matrixTransform(svgRef.current.getScreenCTM().inverse());
+    setSvgX(cursor.x);
+    setSvgY(cursor.y);
   };
 
   let getResponse = async () => {
@@ -108,6 +137,7 @@ function App() {
           stringBottom={stringBottom}
           onClick={svgOnClick}
           onStringBottom={onStringBottom}
+          svgRef={svgRef}
         />
         <button
           onClick={onClickSubmit}
