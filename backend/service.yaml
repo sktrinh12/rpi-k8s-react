@@ -1,15 +1,16 @@
 apiVersion: v1
 kind: Service
 metadata: 
-  name: rpi-lcd-svc 
+  name: $SVC_NAME 
   namespace: rpi-lcd
 spec:
   type: NodePort
   selector: 
     tier: backend
-    component: rpi-lcd
+    app: rpi-lcd
+    worker: $NODE_SELECTOR
   ports: 
     - port: 8000
       targetPort: 8000
       protocol: TCP
-      nodePort: 31000
+      nodePort: $NODE_PORT

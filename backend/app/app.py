@@ -60,7 +60,8 @@ def shutdown_event():
 
 @app.get("/")
 def read_root():
-    return {"Hello": "Raspberry Pi with LCD display!"}
+    welcome = {"Hello": "Raspberry Pi with LCD display!"}
+    return {**welcome, **dct}
 
 
 @app.get("/info")

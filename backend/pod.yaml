@@ -1,11 +1,12 @@
 apiVersion: v1
 kind: Pod
 metadata:
-  name: rpi-lcd-pod
+  name: $POD_NAME
   namespace: rpi-lcd 
   labels:
-    component: rpi-lcd
+    app: rpi-lcd
     tier: backend
+    worker: $NODE_SELECTOR
 spec:
   containers:
     - name: rpi-container 
@@ -40,6 +41,8 @@ spec:
             fieldRef:
               fieldPath: spec.serviceAccountName
   restartPolicy: Never
+  nodeSelector:
+    kubernetes.io/hostname: $NODE_SELECTOR
   volumes:
   - name: i2c
     hostPath:
