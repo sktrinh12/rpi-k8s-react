@@ -17,7 +17,13 @@ RUN apt-get -yq install sudo && adduser --home ${HOME} --shell /bin/bash ${USERN
     && echo "${USERNAME}  ALL=(ALL) NOPASSWD:ALL" | tee "/etc/sudoers.d/${USERNAME}"
 
 WORKDIR ${HOME}
-COPY . ./
+# COPY . ./
+RUN set -ex; git clone "https://github.com/sktrinh12/rpi-k8s-react.git" tmp \
+ && pwd \
+ && (cd tmp/backend && tar c .) | (cd /app && tar xf -) \
+ && ls -la \
+ && rm -rf tmp
+
 # Install Rpi.GPIO
 RUN pip install -r app/requirements.txt
 
