@@ -11,6 +11,7 @@ origins = [
     "http://localhost:3000",
     "localhost:3000",
     "http://192.168.1.12",
+    "http://k8s-main",
 ]
 
 app.add_middleware(
@@ -40,7 +41,7 @@ def get_info():
         lcd_class.lcd_display_string(dct[lbl_odds[cnt]], 2)
         sleep(5)
         lcd_class.lcd_clear()
-    return 0 
+    return 0
 
 @app.on_event("startup")
 async def startup_event():
