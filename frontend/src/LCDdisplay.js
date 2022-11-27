@@ -6,6 +6,7 @@ const LCDdisplay = ({
   stringBottom,
   onClick,
   onStringBottom,
+  svgRef,
 }) => {
   const stringTopLength = stringTop.length === 0 ? 1 : stringTop.length;
   const stringBottomLength =
@@ -20,6 +21,7 @@ const LCDdisplay = ({
       // viewBox="-10 -10 80 50"
       width="400"
       id="svg15051"
+      ref={svgRef}
       onClick={onClick}
     >
       <defs id="defs409" />

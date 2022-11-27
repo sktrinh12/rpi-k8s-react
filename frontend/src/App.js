@@ -8,10 +8,17 @@ function App() {
   const [stringTop, setStringTop] = useState("ABCDEFGHIJKLMNOP");
   const [stringBottom, setStringBottom] = useState("1234567890ABCDEF");
   const [onStringBottom, setOnStringBottom] = useState(false);
+  const [svgX, setSvgX] = useState(0);
+  const [svgY, setSvgY] = useState(0);
+  const svgRef = useRef(null);
   const stringTopRef = useRef(null);
   const stringBottomRef = useRef(null);
   const submitStringsRef = useRef(null);
-  const baseURL = "http://192.168.1.21:31000/lcd";
+  const baseURL = "http://k8s-main:";
+  const nodes = ["worker1", "worker2"];
+  const [workerNode, setWorkerNode] = useState(nodes[0]);
+
+  const workerPorts = { worker1: "31000", worker2: "31500", worker3: "31700" };
 
   useEffect(() => {
     stringTopRef.current.focus();
@@ -36,13 +43,46 @@ function App() {
     setOnStringBottom(true);
   };
 
-  const svgOnClick = () => {
-    stringTopRef.current.focus();
+  const handleDropdownChange = (e) => {
+    setWorkerNode(e.target.value);
+  };
+
+  const svgOnClick = (e) => {
+    getSVGCoordinates(e);
+    console.log(
+      `X: ${parseFloat(svgX.toPrecision(3))}; Y: ${parseFloat(
+        svgY.toPrecision(3)
+      )}`
+    );
+    if (svgY >= 80) {
+      stringBottomRef.current.focus();
+      setOnStringBottom(true);
+    } else {
+      stringTopRef.current.focus();
+      setOnStringBottom(false);
+    }
+  };
+
+  const getSVGCoordinates = (e) => {
+    e.preventDefault();
+    let point = svgRef.current.createSVGPoint();
+    point.x = e.clientX;
+    point.y = e.clientY;
+    let bound = svgRef.current.getBoundingClientRect();
+    setSvgX(point.x - bound.left - svgRef.current.clientLeft);
+    setSvgY(point.y - bound.top - svgRef.current.clientTop);
+    // eslint-disable-next-line
+    {
+      /*getScreenCTM method of the svg element, which returns the transformation matrix from the svg's coordinates to screen coordinates. The inverse of that matrix will transform screen coordinates to the svg coordinate system, and we can apply that transformation matrix to the mouse coordinates*/
+    }
+    // let cursor = point.matrixTransform(svgRef.current.getScreenCTM().inverse());
+    // setSvgX(cursor.x);
+    // setSvgY(cursor.y);
   };
 
   let getResponse = async () => {
     try {
-      const backendURL = `${baseURL}?string_top=${stringTop}&string_bottom=${stringBottom}&delay=0`;
+      const backendURL = `${baseURL}${workerPorts[workerNode]}/lcd?string_top=${stringTop}&string_bottom=${stringBottom}&delay=0`;
       console.log(backendURL);
       let fetched = await fetch(backendURL);
       if (fetched) {
@@ -57,7 +97,7 @@ function App() {
 
   const onClickSubmit = () => {
     console.log(
-      `Form submitted: ${stringTop} <-> ${stringTopRef.current.value} & ${stringBottom} <-> ${stringBottomRef.current.value}`
+      `Form submitted: ${stringTop} <-> ${stringTopRef.current.value} & ${stringBottom} <-> ${stringBottomRef.current.value} | ${workerNode}`
     );
     getResponse();
   };
@@ -69,6 +109,18 @@ function App() {
           className="header-style"
           title="Raspberry Pi LCD Display"
         ></Title>
+        <div className="dropdown-style">
+          <label htmlFor="nodes">Worker Nodes</label>
+          <select name="nodes" onChange={handleDropdownChange}>
+            {nodes.map((n, i) => {
+              return (
+                <option key={i} value={n}>
+                  {n}
+                </option>
+              );
+            })}
+          </select>
+        </div>
         <Input
           type="text"
           onChange={stringTopChange}
@@ -88,6 +140,7 @@ function App() {
           stringBottom={stringBottom}
           onClick={svgOnClick}
           onStringBottom={onStringBottom}
+          svgRef={svgRef}
         />
         <button
           onClick={onClickSubmit}
