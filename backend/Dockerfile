@@ -20,7 +20,7 @@ WORKDIR ${HOME}
 # COPY . ./
 RUN set -ex; git clone "https://github.com/sktrinh12/rpi-k8s-react.git" tmp \
  && pwd \
- && (cd tmp/backend && tar c .) | (cd /app && tar xf -) \
+ && (cd tmp/backend && tar c .) | (cd $HOME && tar xf -) \
  && ls -la \
  && rm -rf tmp
 
