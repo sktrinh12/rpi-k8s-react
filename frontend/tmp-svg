@@ -1,0 +1,28 @@
+<svg height="700" width="500">
+    <rect width="400" height="650" rx="5" ry="5" style="fill: pink; stroke: red; stroke-width: 4px;"/>
+
+     <text text-anchor="middle" font-size="80" x="110" y="80">H</text>
+     <g transform="translate(200, 0)">
+       <text text-anchor="middle" font-size="80" x="110" y="80">H</text>
+     </g>
+
+    <circle cx="300" cy="200" r="50" style="fill: grey; stroke: black; stroke-width: 2px;" />
+   <svg y="120">
+    <circle cx="300" cy="200" r="50" style="fill: grey; stroke: black; stroke-width: 2px;" />
+    <svg y="120">
+    <circle cx="300" cy="200" r="50" style="fill: grey; stroke: black; stroke-width: 2px;" />
+    <svg x="10">
+      <circle cx="100" cy="200" r="50" style="fill: grey; stroke: black; stroke-width: 2px;" />
+       <svg y="120">
+      <circle cx="100" cy="200" r="50" style="fill: blue; stroke: black; stroke-width: 2px;" />
+
+    </svg>
+    </svg>
+
+     <svg y="120">
+    <circle cx="300" cy="200" r="50" style="fill: grey; stroke: black; stroke-width: 2px;" />
+    </svg>
+    </svg>
+    </svg>
+
+</svg>
