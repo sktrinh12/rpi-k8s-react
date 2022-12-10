@@ -25,7 +25,8 @@ app.add_middleware(
 dct = {}
 lcd_class = lcd()
 lcd_class.lcd_clear()
-TIME_API = "http://worldtimeapi.org/api/timezone/"
+freezetime = freeze_time(datetime.now(), tick=True)
+freezetime.start()
 
 @app.on_event("startup")
 async def startup_event():
@@ -36,8 +37,6 @@ async def startup_event():
     dct["POD_SVC"] = getenv("POD_SVC", "POD_SVC")
     if len(dct) % 2 != 0:
         dct["PHANTOM"] = ""
-    freezetime = freeze_time(datetime.now(), tick=True)
-    freezetime.start()
 
 
 @app.on_event("shutdown")
@@ -73,14 +72,14 @@ async def lcd(string_top: str, string_bottom: str, delay: int):
 
 @app.get("/binary-clock")
 async def binary_clock(tzone: str):
-    output_dct = sync_time(tzone)
+    output_dct = sync_time(tzone, freezetime)
+    print(output_dct)
     time_tuple = output_dct['TIME_TUPLE']
     hour = time_tuple[0]
     minute = time_tuple[1]
     seconds = time_tuple[2]
     data = binary_output((hour, minute, seconds))
     # display_leds(data)
-    print(data)
     return data
 
 @app.get("/ctime")
