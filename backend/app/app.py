@@ -1,8 +1,8 @@
 from fastapi import FastAPI, status
 from app.RPi_I2C_driver import *
-from time import sleep
 from os import getenv
 from fastapi.middleware.cors import CORSMiddleware
+from app.functions import *
 
 app = FastAPI()
 
@@ -25,23 +25,7 @@ app.add_middleware(
 dct = {}
 lcd_class = lcd()
 lcd_class.lcd_clear()
-
-def get_info():
-    dct_keys = list(dct.keys())
-    max_loop = int(len(dct)/2)
-    lbl_evens = dct_keys[::2]
-    lbl_odds = dct_keys[1::2]
-    # startup message display
-    lcd_class.lcd_clear()
-    for _ in range(max_loop*2):
-        cnt = int(_ % max_loop)
-        #print(f'>>{dct[lbl_evens[cnt]]}')
-        #print(f'##{dct[lbl_odds[cnt]]}')
-        lcd_class.lcd_display_string(dct[lbl_evens[cnt]], 1)
-        lcd_class.lcd_display_string(dct[lbl_odds[cnt]], 2)
-        sleep(5)
-        lcd_class.lcd_clear()
-    return 0
+TIME_API = "http://worldtimeapi.org/api/timezone/"
 
 @app.on_event("startup")
 async def startup_event():
@@ -52,11 +36,14 @@ async def startup_event():
     dct["POD_SVC"] = getenv("POD_SVC", "POD_SVC")
     if len(dct) % 2 != 0:
         dct["PHANTOM"] = ""
+    freezetime = freeze_time(datetime.now(), tick=True)
+    freezetime.start()
 
 
 @app.on_event("shutdown")
 def shutdown_event():
     lcd_class.lcd_clear()
+    freezetime.stop()
 
 
 @app.get("/")
@@ -83,3 +70,26 @@ async def lcd(string_top: str, string_bottom: str, delay: int):
     res = {"MSG": f"Dispalyed: {string_top} & {string_bottom}, delay of: {delay}"}
     rtn = dict(STATUS_CODE=status.HTTP_200_OK)
     return {**res, **rtn}
+
+@app.get("/binary-clock")
+async def binary_clock(tzone: str):
+    output_dct = sync_time(tzone)
+    time_tuple = output_dct['TIME_TUPLE']
+    hour = time_tuple[0]
+    minute = time_tuple[1]
+    seconds = time_tuple[2]
+    data = binary_output((hour, minute, seconds))
+    # display_leds(data)
+    print(data)
+    return data
+
+@app.get("/ctime")
+async def current_time():
+    return {"TIME": datetime.now().strftime("%Y-%b-%dT%H:%M:%S")}
+
+@app.get("/tzones")
+async def time_zones():
+    response = requests.get(TIME_API)
+    response.close()
+    json = response.json()
+    return json
