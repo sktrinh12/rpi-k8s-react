@@ -6,6 +6,8 @@ import pprint
 import requests
 from freezegun import freeze_time
 
+TIME_API = "http://worldtimeapi.org/api/timezone/"
+
 def get_info():
     """
     get the information about the kubernetes environ
@@ -102,12 +104,13 @@ def display_leds(payload):
                           col: {col}")
                     # disp.pixel(curr_elm[0], curr_elm[1], col)
 
-def change_freeze_time(other_datetime):
-        freezetime.move_to(other_datetime)
+def change_freeze_time(other_datetime, freezetime):
+        freezetime.stop()
+        freezetime = freeze_time(other_datetime, tick=True)
         return datetime.now().strftime('%Y-%b-%dT%H:%M:%S')
 
 
-def sync_time(tzone):
+def sync_time(tzone, freezetime):
     """
     input - tzone: str, the time zone
     output - dictionary, the shell output and the timestamp
@@ -126,10 +129,11 @@ def sync_time(tzone):
     the_time = the_time.split(".")[0]
     hours, minutes, seconds = [int(x) for x in the_time.split(":")]
     # set time on system
-    time_tuple = (year, month, mday, hour, minute, second)
-    other_datetime = datetime.datetime(year=year, month=month, day=mday,
-                                       hour=hour, minute=minute, second=second)
-    new_datetime = change_freeze_time(other_datetime)
+    time_tuple = (year, month, mday, hours, minutes, seconds)
+    print(time_tuple)
+    other_datetime = datetime(year=year, month=month, day=mday,
+                                       hour=hours, minute=minutes, second=seconds)
+    new_datetime = change_freeze_time(other_datetime, freezetime)
     # time_string = datetime(*time_tuple).isoformat()
     # subprocess.call(shlex.split("timedatectl set-ntp false"))  # May be necessary
     # subprocess.call(shlex.split("date -s '%s'" % time_string))
