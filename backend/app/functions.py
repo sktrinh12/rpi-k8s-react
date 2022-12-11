@@ -105,9 +105,13 @@ def display_leds(payload):
                     # disp.pixel(curr_elm[0], curr_elm[1], col)
 
 def change_freeze_time(other_datetime, freezetime):
-        freezetime.stop()
-        freezetime = freeze_time(other_datetime, tick=True)
-        return datetime.now().strftime('%Y-%b-%dT%H:%M:%S')
+    # stop current frozen time
+    freezetime.stop()
+    # define new frozen time
+    freezetime = freeze_time(other_datetime, tick=True)
+    freezetime.start()
+    ts = datetime.now().strftime('%Y-%b-%dT%H:%M:%S')
+    return ts
 
 
 def sync_time(tzone, freezetime):
@@ -130,7 +134,6 @@ def sync_time(tzone, freezetime):
     hours, minutes, seconds = [int(x) for x in the_time.split(":")]
     # set time on system
     time_tuple = (year, month, mday, hours, minutes, seconds)
-    print(time_tuple)
     other_datetime = datetime(year=year, month=month, day=mday,
                                        hour=hours, minute=minutes, second=seconds)
     new_datetime = change_freeze_time(other_datetime, freezetime)
@@ -142,7 +145,7 @@ def sync_time(tzone, freezetime):
     # subprocess.call(shlex.split("hwclock -w"))
     # output = subprocess.check_output(shlex.split("date"))
     # print(f'Date output: {new_datetime}')
-    return {'SHELL_OUTPUT': new_datetime, 'TIME_TUPLE' : time_tuple}
+    return {'DATE': new_datetime, 'TIME_TUPLE' : time_tuple}
 
 
 # if __name__ == "__main__":
