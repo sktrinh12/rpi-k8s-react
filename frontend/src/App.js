@@ -2,6 +2,7 @@ import React, { useEffect, useRef, useState } from "react";
 import LCDdisplay from "./LCDdisplay";
 import Title from "./Title";
 import Input from "./Input";
+import Clock from "./Clock";
 import "./App.css";
 
 function App() {
@@ -153,6 +154,7 @@ function App() {
           Type in two sentences each with maximum of 16 characters to see it
           appear on the LCD display!
         </p>
+        <Clock />
       </header>
     </div>
   );
