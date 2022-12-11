@@ -7,29 +7,31 @@ import requests
 from freezegun import freeze_time
 
 TIME_API = "http://worldtimeapi.org/api/timezone/"
+unit_time_dct = {'binary':['H', 'M', 'S'], 'bcd': [['H','H_'], ['M','M_'], ['S','S_']]}
+time_prefix = ['HH', 'MM', 'SS']
 
-def get_info():
+def get_info(lcd_class, env_dct):
     """
     get the information about the kubernetes environ
     variables and display on lcd screen in a loop
     """
-    dct_keys = list(dct.keys())
-    max_loop = int(len(dct)/2)
+    dct_keys = list(env_dct.keys())
+    max_loop = int(len(env_dct)/2)
     lbl_evens = dct_keys[::2]
     lbl_odds = dct_keys[1::2]
     # startup message display
     lcd_class.lcd_clear()
     for _ in range(max_loop*2):
         cnt = int(_ % max_loop)
-        #print(f'>>{dct[lbl_evens[cnt]]}')
-        #print(f'##{dct[lbl_odds[cnt]]}')
-        lcd_class.lcd_display_string(dct[lbl_evens[cnt]], 1)
-        lcd_class.lcd_display_string(dct[lbl_odds[cnt]], 2)
+        #print(f'>>{env_dct[lbl_evens[cnt]]}')
+        #print(f'##{env_dct[lbl_odds[cnt]]}')
+        lcd_class.lcd_display_string(env_dct[lbl_evens[cnt]], 1)
+        lcd_class.lcd_display_string(env_dct[lbl_odds[cnt]], 2)
         sleep(5)
         lcd_class.lcd_clear()
     return 0
 
-def binary_output(input_ints):
+def binary_output(input_ints, unit_time):
     """
     input - input_ints: tuple of three elements
     corresponds to H:M:S
@@ -40,19 +42,20 @@ def binary_output(input_ints):
     display on leds and within js on frontend using pure
     binary with only three columns
     """
+    assert len(unit_time) == len(input_ints), f"inputs must be same length, {len(input_ints)} != {len(unit_time)}"
     payload = {}
-    for c in range(len(input_ints)):
+    for i in range(len(input_ints)):
         array_vals = []
-        input_bit = input_ints[c]
-        # only go to 7 because the time values never pass 23
+        input_bit = input_ints[i]
+        # only go to 7 because the time values never pass 60, pos 7 in binary=64
         for y in range(7):
             # binary AND operation with 0000001 to get even/odd value that equates
             # to whether to turn on or off
             bit = input_bit & 0x01
-            array_vals.append((c, y, bit))
+            array_vals.append((i, y, bit))
             # right shift the value to divide by 2
             input_bit = input_bit >> 1
-        payload[f'col_{c}'] = array_vals
+        payload[unit_time[i]] = array_vals
     return payload
 
 def bcd_output(input_ints):
@@ -67,11 +70,13 @@ def bcd_output(input_ints):
     mapping to display on leds and within js on frontend
     use of 6 columns
     """
-    time_prefix = ['HH', 'MM', 'SS']
+
+    # floor divide all by 10
     first_digit = map(lambda x: x // 10, input_ints)
+    # modulus all by 10
     second_digit = map(lambda x: x % 10, input_ints)
-    payload = {time_prefix[i] :binary_output(bit) for i,bit in
-               enumerate(zip(first_digit, second_digit))}
+    payload = {time_prefix[i] :binary_output((bit1, bit2), utm) for i,(bit1, bit2, utm) in
+               enumerate(zip(first_digit, second_digit, unit_time_dct['bcd']))}
     return payload
 
 
@@ -117,7 +122,7 @@ def change_freeze_time(other_datetime, freezetime):
 def sync_time(tzone, freezetime):
     """
     input - tzone: str, the time zone
-    output - dictionary, the shell output and the timestamp
+    output - dictionary, the datetime string and the timestamp
     synchronise the system time with the worldtimeapi time based on
     user's input for timezone
     """
