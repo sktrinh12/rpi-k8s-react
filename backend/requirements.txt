@@ -2,3 +2,5 @@ uvicorn
 fastapi
 freezegun
 requests
+pytest
+httpx
