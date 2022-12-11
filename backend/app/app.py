@@ -73,12 +73,12 @@ async def lcd(string_top: str, string_bottom: str, delay: int):
 @app.get("/binary-clock")
 async def binary_clock(tzone: str):
     output_dct = sync_time(tzone, freezetime)
-    print(output_dct)
     time_tuple = output_dct['TIME_TUPLE']
     hour = time_tuple[0]
     minute = time_tuple[1]
     seconds = time_tuple[2]
     data = binary_output((hour, minute, seconds))
+    data.update(output_dct)
     # display_leds(data)
     return data
 
