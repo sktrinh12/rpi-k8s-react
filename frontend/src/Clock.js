@@ -1,4 +1,6 @@
 import React from "react";
+import Led from "./Led";
+import Screen from "./Screen";
 
 const range = (start, end, step) => {
   return Array.from(
@@ -6,45 +8,50 @@ const range = (start, end, step) => {
     (e, x) => start + x * step
   );
 };
-
-const startCx = 75;
-const numberOfCircles = range(1, 49, 1);
-// console.log(numberOfCircles);
+const colours = {
+  blue: ["#005dc3", "#0066c3", "#aec5ff"],
+  red: ["#a30000", "#8e0000", "#f3c9c9"],
+  green: ["#275214", "#214611", "#c3d5bb"],
+};
 
 const Clock = () => {
+  const numberOfCircles = 56;
+  const arrayOfCircles = Array.from({ length: 8 }, (x) =>
+    range(1, Math.floor(numberOfCircles / 8), 1)
+  );
+  // console.log(arrayOfCircles);
+
   return (
-    <svg
-      height="675"
-      width="675"
-      viewBox="-90 -15 700 700"
-      xmlns="http://www.w3.org/2000/svg"
-    >
-      <rect
-        width="525"
-        height="670"
-        rx="15"
-        ry="15"
-        fill="pink"
-        stroke="red"
-        strokeWidth="4px"
-      />
-      {numberOfCircles.map((n, i) => {
-        const cx = startCx * parseInt(i / 8) + startCx;
-        const cy = ((i % 8) + 1) * startCx;
-        // console.log(`${i}: cx=${cx}, cy=${cy}`);
-        return (
-          <circle
-            key={i}
-            cx={cx}
-            cy={cy}
-            r="25"
-            fill="blue"
-            stroke="black"
-            strokeWidth="2px"
-          />
-        );
-      })}
-    </svg>
+    <table>
+      <tbody>
+        {arrayOfCircles.map((arrOut, i) => {
+          return (
+            <React.Fragment key={`frag_${i}`}>
+              <tr key={`row_${i}`}>
+                {arrOut.map((arrIn, j) => {
+                  return (
+                    <>
+                      <td key={`cell_${i}${j}`}>
+                        {j === 0 && i === 0 && (
+                          <Screen className="inner_wrap" />
+                        )}
+                        <Led
+                          key={`led_${i}${j}`}
+                          colours={
+                            j % 2 === 0 ? colours["green"] : colours["blue"]
+                          }
+                          radColourIds={`${i}${j}`}
+                        />
+                      </td>
+                    </>
+                  );
+                })}
+              </tr>
+            </React.Fragment>
+          );
+        })}
+      </tbody>
+    </table>
   );
 };
 

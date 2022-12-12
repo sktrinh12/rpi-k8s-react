@@ -180,3 +180,15 @@
   top: 4px;
   background: #ee9f1c;
 }
+
+td {
+  padding-left: 75px;
+  align-items: center;
+}
+
+.inner_wrap {
+  z-index: -10;
+  position: absolute;
+  margin-left: -79px;
+  margin-top: -2.5px;
+}
