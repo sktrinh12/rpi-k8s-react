@@ -1,23 +1,40 @@
 import React from "react";
+import Led from "./Led";
 
-const Screen = ({ className }) => {
+const colours = {
+  blue: "#005dc3",
+  red: "#b70000",
+  green: "#6aa84f",
+  grey: "#BCBCBC",
+};
+
+const r = 24;
+
+const Screen = ({ data, arrayColumns, arrayRows }) => {
   return (
     <svg
-      position="absolute"
-      width="100%"
-      height="100%"
       xmlns="http://www.w3.org/2000/svg"
       xmlnsXlink="http://www.w3.org/1999/xlink"
-      // width="181.23959mm"
-      // height="138.90625mm"
+      width="100%"
+      height="100%"
       top="0"
       left="0"
       viewBox="0 0 642.18753 492.18747"
-      id="svg2"
       version="1.1"
-      className={className}
     >
       <defs id="defs4">
+        <linearGradient id="linearGradient1582">
+          <stop stopColor="#191919" stopOpacity="1" offset="0" id="stop1578" />
+          <stop stopColor="#323232" stopOpacity="1" offset="1" id="stop1580" />
+        </linearGradient>
+        <linearGradient id="linearGradient1566">
+          <stop stopColor="#000000" stopOpacity="1" offset="0" id="stop1562" />
+          <stop stopColor="#64da64" stopOpacity="1" offset="1" id="stop1564" />
+        </linearGradient>
+        <linearGradient id="linearGradient1526">
+          <stop stopColor="#000000" stopOpacity="1" offset="0" id="stop1522" />
+          <stop stopColor="#000000" stopOpacity="0" offset="1" id="stop1524" />
+        </linearGradient>
         <linearGradient id="linearGradient5185">
           <stop id="stop5183" offset="0" stopColor="#000000" stopOpacity="1" />
           <stop id="stop5181" offset="1" stopColor="#646464" stopOpacity="1" />
@@ -83,85 +100,137 @@ const Screen = ({ className }) => {
           gradientUnits="userSpaceOnUse"
           gradientTransform="translate(-168.28123,549.25883)"
         />
+        <radialGradient
+          xlinkHref="#linearGradient5185"
+          id="radialGradient1518"
+          gradientUnits="userSpaceOnUse"
+          gradientTransform="matrix(1.5240016,0,0,0.77513588,-168.25367,55.337654)"
+          cx="321.09375"
+          cy="246.09375"
+          fx="321.09375"
+          fy="246.09375"
+          r="318.75"
+        />
+        <linearGradient
+          xlinkHref="#linearGradient1526"
+          id="linearGradient1528"
+          x1="3.5531065"
+          y1="417.21533"
+          x2="597.48553"
+          y2="74.308273"
+          gradientUnits="userSpaceOnUse"
+        />
+        <radialGradient
+          xlinkHref="#linearGradient1582"
+          id="radialGradient1576"
+          cx="493.56238"
+          cy="441.31989"
+          fx="493.56238"
+          fy="441.31989"
+          r="302.34375"
+          gradientTransform="matrix(1.1182301,-0.00953598,0.00835003,0.97916037,-236.85132,-183.66633)"
+          gradientUnits="userSpaceOnUse"
+        />
       </defs>
-      <rect
-        fill="#000000"
-        fillOpacity="1"
-        stroke="#000000"
-        strokeWidth="46.87500381"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-        strokeMiterlimit="4"
-        strokeDasharray="none"
-        strokeDashoffset="5.625"
-        paintOrder="normal"
-        id="rect5156"
-        width="595.3125"
-        height="445.3125"
-        x="23.437502"
-        y="23.437502"
-      />
-      <rect
-        fill="#214c00"
-        fillOpacity="1"
-        stroke="url(#linearGradient5187)"
-        strokeWidth="46.875"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-        strokeMiterlimit="4"
-        strokeDasharray="none"
-        strokeDashoffset="5.625"
-        paintOrder="normal"
-        id="rect5156-3"
-        width="590.625"
-        height="440.625"
-        x="25.781252"
-        y="25.781252"
-      />
-      <g
-        id="g4351"
-        transform="matrix(0.18978667,0,0,0.18978667,833.26699,932.04491)"
-      />
-      <g
-        transform="matrix(0.18978667,0,0,0.18978667,833.26699,932.04491)"
-        id="g4863"
-      />
-      <rect
-        fill="#323232"
-        fillOpacity="1"
-        stroke="none"
-        strokeWidth="46.87500381"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-        strokeMiterlimit="4"
-        strokeDasharray="none"
-        strokeDashoffset="6"
-        strokeOpacity="1"
-        paintOrder="normal"
-        id="rect5199"
-        width="609.375"
-        height="459.37497"
-        x="16.406252"
-        y="16.406282"
-      />
-      <rect
-        y="18.750002"
-        x="18.750002"
-        height="454.68747"
-        width="604.6875"
-        id="rect5201"
-        fill="#000000"
-        fillOpacity="1"
-        stroke="none"
-        strokeWidth="46.87500381"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-        strokeMiterlimit="4"
-        strokeDasharray="none"
-        strokeDashoffset="6"
-        strokeOpacity="1"
-        paintOrder="normal"
-      />
+      <g id="g1590">
+        <rect
+          y="23.437502"
+          x="23.437502"
+          height="445.3125"
+          width="595.3125"
+          id="rect5156"
+          fill="#000000"
+          fillOpacity="1"
+          stroke="url(#linearGradient1528)"
+          strokeWidth="46.87500381"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          strokeMiterlimit="4"
+          strokeDasharray="none"
+          strokeDashoffset="5.625"
+          paintOrder="normal"
+        />
+        <rect
+          y="25.781252"
+          x="25.781252"
+          height="440.625"
+          width="590.625"
+          id="rect5156-3"
+          fill="#000000"
+          fillOpacity="1"
+          stroke="url(#radialGradient1518)"
+          strokeWidth="46.875"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          strokeMiterlimit="4"
+          strokeDasharray="none"
+          strokeDashoffset="5.625"
+          paintOrder="normal"
+        />
+        <g
+          transform="matrix(0.18978667,0,0,0.18978667,833.26699,932.04491)"
+          id="g4351"
+        />
+        <g
+          id="g4863"
+          transform="matrix(0.18978667,0,0,0.18978667,833.26699,932.04491)"
+        />
+        <rect
+          y="16.406282"
+          x="16.406252"
+          height="459.37497"
+          width="609.375"
+          id="rect5199"
+          fill="#323232"
+          fillOpacity="1"
+          stroke="none"
+          strokeWidth="46.87500381"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          strokeMiterlimit="4"
+          strokeDasharray="none"
+          strokeDashoffset="6"
+          strokeOpacity="1"
+          paintOrder="normal"
+        />
+        <rect
+          fill="url(#radialGradient1576)"
+          fillOpacity="1"
+          stroke="none"
+          strokeWidth="46.87500381"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          strokeMiterlimit="4"
+          strokeDasharray="none"
+          strokeDashoffset="6"
+          strokeOpacity="0"
+          paintOrder="normal"
+          id="rect5201"
+          width="604.6875"
+          height="454.68747"
+          x="16.406252"
+          y="16.406282"
+        />
+      </g>
+      <>
+        {Object.values(data).map((vals, i) => {
+          return (
+            <React.Fragment key={`frag_${i}`}>
+              {vals.map((bit, j) => {
+                return (
+                  <Led
+                    key={`led_${i}${j}`}
+                    colour={bit === 1 ? colours["green"] : colours["grey"]}
+                    x={arrayRows[i]}
+                    y={arrayColumns[j]}
+                    r={r}
+                  />
+                );
+              })}
+            </React.Fragment>
+          );
+        })}
+      </>
     </svg>
   );
 };
