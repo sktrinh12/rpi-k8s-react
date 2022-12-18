@@ -6,9 +6,9 @@ import pprint
 import requests
 from freezegun import freeze_time
 
-TIME_API = "http://worldtimeapi.org/api/timezone/"
-unit_time_dct = {'binary':['H', 'M', 'S'], 'bcd': [['H','H_'], ['M','M_'], ['S','S_']]}
-time_prefix = ['HH', 'MM', 'SS']
+TIME_API = "https://timeapi.io/api/"
+unit_time_dct = {'binary':['H', 'M', 'S'], 'bcd': ['H','H_', 'M','M_', 'S','S_']}
+# time_prefix = ['HH', 'MM', 'SS']
 
 def get_info(lcd_class, env_dct):
     """
@@ -43,19 +43,22 @@ def binary_output(input_ints, unit_time):
     binary with only three columns
     """
     assert len(unit_time) == len(input_ints), f"inputs must be same length, {len(input_ints)} != {len(unit_time)}"
+    num_bits = 4 if len(unit_time) == 6 else 7
     payload = {}
     for i in range(len(input_ints)):
         array_vals = []
         input_bit = input_ints[i]
-        # only go to 7 because the time values never pass 60, pos 7 in binary=64
-        for y in range(7):
+        # only go to 7 or 4 because the time values never pass 60, pos 7 in
+        # binary=64; or pos 4 binary=8
+        for y in range(num_bits):
             # binary AND operation with 0000001 to get even/odd value that equates
             # to whether to turn on or off
             bit = input_bit & 0x01
-            array_vals.append((i, y, bit))
+            array_vals.append(bit)
             # right shift the value to divide by 2
             input_bit = input_bit >> 1
-        payload[unit_time[i]] = array_vals
+        # reverse the order so it shows up properly on frontend
+        payload[unit_time[i]] = array_vals[::-1]
     return payload
 
 def bcd_output(input_ints):
@@ -70,13 +73,13 @@ def bcd_output(input_ints):
     mapping to display on leds and within js on frontend
     use of 6 columns
     """
+    time_digits = [0]*6
 
     # floor divide all by 10
-    first_digit = map(lambda x: x // 10, input_ints)
+    time_digits[::2] = list(map(lambda x: x // 10, input_ints))
     # modulus all by 10
-    second_digit = map(lambda x: x % 10, input_ints)
-    payload = {time_prefix[i] :binary_output((bit1, bit2), utm) for i,(bit1, bit2, utm) in
-               enumerate(zip(first_digit, second_digit, unit_time_dct['bcd']))}
+    time_digits[1::2] = list(map(lambda x: x % 10, input_ints))
+    payload = binary_output(time_digits, unit_time_dct['bcd'])
     return payload
 
 
@@ -128,15 +131,15 @@ def sync_time(tzone, freezetime):
     """
 
     # fetch api time
-    response = requests.get(f'{TIME_API}{tzone}')
+    response = requests.get(f'{TIME_API}/Time/current/zone?timeZone={tzone}')
     response.close()
     json = response.json()
-    current_time = json["datetime"]
-    the_date, the_time = current_time.split("T")
-    year, month, mday = [int(x) for x in the_date.split("-")]
-    # 2022-11-28T14:14:07.981568+08:00
-    the_time = the_time.split(".")[0]
-    hours, minutes, seconds = [int(x) for x in the_time.split(":")]
+    year = json["year"]
+    month = json["month"]
+    mday = json["day"]
+    hours = json["hour"]
+    seconds = json["seconds"]
+    minutes = json["minute"]
     # set time on system
     time_tuple = (year, month, mday, hours, minutes, seconds)
     other_datetime = datetime(year=year, month=month, day=mday,
@@ -150,7 +153,19 @@ def sync_time(tzone, freezetime):
     # subprocess.call(shlex.split("hwclock -w"))
     # output = subprocess.check_output(shlex.split("date"))
     # print(f'Date output: {new_datetime}')
-    return {'DATE': new_datetime, 'TIME_TUPLE' : time_tuple}
+    return {'DATE': new_datetime, 'TIME_UNITS' : time_tuple}
+
+def get_current_time():
+    """
+    output - a 3 element tuple (H, M, S); in order to be inputted into
+    the binary_output function
+    get the current time that is referenced by freezegun's time that was set
+    It converts the string into a datetiem object so that it can be converted
+    into binary.
+
+    """
+    dt = datetime.now()
+    return  (dt.hour, dt.minute, dt.second)
 
 
 # if __name__ == "__main__":

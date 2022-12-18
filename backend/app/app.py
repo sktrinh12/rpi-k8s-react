@@ -1,6 +1,6 @@
 from fastapi import FastAPI, status, Query, Path
 from fastapi.exceptions import HTTPException
-from app.RPi_I2C_driver import *
+# from app.RPi_I2C_driver import *
 from os import getenv
 from fastapi.middleware.cors import CORSMiddleware
 from app.functions import *
@@ -24,11 +24,11 @@ app.add_middleware(
 )
 
 env_dct = {}
-lcd_class = lcd()
-lcd_class.lcd_clear()
+# lcd_class = lcd()
+# lcd_class.lcd_clear()
 freezetime = freeze_time(datetime.now(), tick=True)
 freezetime.start()
-response = requests.get(TIME_API)
+response = requests.get(f'{TIME_API}/TimeZone/AvailableTimeZones')
 response.close()
 timezones = response.json()
 clock_types = ['bcd', 'binary']
@@ -47,7 +47,7 @@ async def startup_event():
 
 @app.on_event("shutdown")
 def shutdown_event():
-    lcd_class.lcd_clear()
+    # lcd_class.lcd_clear()
     freezetime.stop()
 
 
@@ -66,12 +66,12 @@ async def info():
 
 @app.get("/lcd")
 async def lcd(string_top: str = Query(min_length=1, max_length=16), string_bottom: str = Query(min_length=1, max_length=16), elapse: int = Path(title="Time elapsed for displaying on lcd screen", ge=0)):
-    lcd_class.lcd_clear()
-    lcd_class.lcd_display_string(string_top.upper(), 1)
-    lcd_class.lcd_display_string(string_bottom.upper(), 2)
+    # lcd_class.lcd_clear()
+    # lcd_class.lcd_display_string(string_top.upper(), 1)
+    # lcd_class.lcd_display_string(string_bottom.upper(), 2)
     if elapse > 0:
         sleep(int(elapse))
-        lcd_class.lcd_clear()
+        # lcd_class.lcd_clear()
     res = {"MSG": f"Dispalyed: {string_top} & {string_bottom}, elapse time: {elapse}"}
     rtn = dict(STATUS_CODE=status.HTTP_200_OK)
     return {**res, **rtn}
@@ -83,7 +83,7 @@ async def binary_clock(tzone: str = Query(...), clock_type: str = Query(min_leng
     if clock_type not in clock_types:
         raise HTTPException( status_code=409, detail=f"Clock-type must be either {' or '.join(clock_types)}, {clock_type} is invalid")
     output_datetime_dct = sync_time(tzone, freezetime)
-    time_tuple = output_datetime_dct['TIME_TUPLE']
+    time_tuple = output_datetime_dct['TIME_UNITS']
     hour = time_tuple[3]
     minute = time_tuple[4]
     seconds = time_tuple[5]
@@ -91,14 +91,19 @@ async def binary_clock(tzone: str = Query(...), clock_type: str = Query(min_leng
         data = binary_output((hour, minute, seconds), unit_time_dct[clock_type])
     elif clock_type == 'bcd':
         data = bcd_output((hour, minute, seconds))
-    data.update(output_datetime_dct)
+    # data.update(output_datetime_dct)
     # display_leds(data)
     return data
 
 @app.get("/ctime")
-async def current_time():
-    return {"TIME": datetime.now().strftime("%Y-%b-%dT%H:%M:%S")}
+async def current_time(clock_type: str = Query(min_length=3, max_length=6)):
+    hour, minute, seconds = get_current_time()
+    if clock_type == 'binary':
+        data = binary_output((hour, minute, seconds), unit_time_dct[clock_type])
+    elif clock_type == 'bcd':
+        data = bcd_output((hour, minute, seconds))
+    return data
 
 @app.get("/tzones")
 async def time_zones():
-    return timezones 
+    return timezones
