@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from "react";
-// import ScreenTwo from "./ScreenTwo";
 import Screen from "./Screen";
 
 const range = (start, end, step) => {
