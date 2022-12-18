@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
-import ScreenTwo from "./ScreenTwo";
+// import ScreenTwo from "./ScreenTwo";
+import Screen from "./Screen";
 
 const range = (start, end, step) => {
   return Array.from(
@@ -10,7 +11,7 @@ const range = (start, end, step) => {
 
 const baseURL = process.env.REACT_APP_BACKEND_URL ?? "http://localhost:8000";
 const yStart = 15;
-const yStep = 65;
+const yStep = 55;
 const xStep = 75;
 
 const Clock = () => {
@@ -24,12 +25,21 @@ const Clock = () => {
   //       [key]: data[key],
   //     });
   //   }, {});
-  const xStart = data.length === 3 ? 275 : 55;
-  const numRows = data.length === 3 ? 4 : 8;
-  const numColumns = data.length === 3 ? 3 : 6;
-  const arrayRows = range(xStart, xStart + numColumns * xStart, xStep);
-  const arrayColumns = range(yStart, yStart + numRows * yStart, yStep);
-  // console.log(data);
+  const dataLength = Object.keys(data).length;
+  // if bcd is selected need 6 columns (keys) HH:MM:SS
+  let xStart = 55; // starting x coordinate
+  let numRows = 6;
+  let numColumns = 4;
+  // if binary is selected only need three columns (keys) H:M:S
+  if (dataLength === 3) {
+    xStart = 225;
+    numRows = 3; // looking at it 90 degree flipped
+    numColumns = 7;
+  }
+  const arrayRows = range(xStart, xStart + numRows * xStep, xStep);
+  const arrayColumns = range(yStart, yStep * numColumns, yStep);
+  // console.log(arrayColumns);
+  // console.log(arrayRows);
 
   let getTime = async (changeTime = true) => {
     try {
@@ -60,7 +70,7 @@ const Clock = () => {
   }, []);
 
   return (
-    <ScreenTwo data={data} arrayColumns={arrayColumns} arrayRows={arrayRows} />
+    <Screen data={data} arrayColumns={arrayColumns} arrayRows={arrayRows} />
   );
 };
 
