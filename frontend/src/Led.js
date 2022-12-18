@@ -2,15 +2,7 @@ import React from "react";
 
 const Led = ({ colour, x, y, r }) => {
   return (
-    <svg
-      xmlns="http://www.w3.org/2000/svg"
-      //width="200mm"
-      // viewBox="0 0 141.85667 141.85667"
-      version="1.1"
-      // viewBox={`0 0 ${141.85 * (r / 10)} ${141.85 * (r / 10)}`}
-      x={x}
-      y={y}
-    >
+    <svg xmlns="http://www.w3.org/2000/svg" version="1.1" x={x} y={y}>
       <defs id="defs1034">
         <linearGradient id="linearGradient2678">
           <stop stopColor="#4d4d4d" stopOpacity="1" offset="0" id="stop2674" />
