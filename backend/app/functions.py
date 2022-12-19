@@ -1,14 +1,11 @@
 from time import sleep
 from datetime import datetime
-# import subprocess
-# import shlex
-import pprint
+# import pprint
 import requests
 from freezegun import freeze_time
 
 TIME_API = "https://timeapi.io/api/"
 unit_time_dct = {'binary':['H', 'M', 'S'], 'bcd': ['H','H_', 'M','M_', 'S','S_']}
-# time_prefix = ['HH', 'MM', 'SS']
 
 def get_info(lcd_class, env_dct):
     """
@@ -83,34 +80,26 @@ def bcd_output(input_ints):
     return payload
 
 
-def display_leds(payload):
+def display_leds(payload, pixels, rgb):
     """
-    trigger leds based on the 1's that indicate
-    to light up using the neopixel adafruit library
+    input
+    payload: dictionary that shows which leds to turn on;
+    pixel: class of the neopixel that instantiates the rpi connection;
+    rgb: is the 3 element tuple that contains what combo of colours to pass to neopixel;
+    trigger leds based on the 1's that indicate to light up using the neopixel
+    based on adafruit library
     """
-    nbits = 7
-    if 'HH' in payload:
-        # check if nested dictionary for the bcd_output
-        for key, val in payload.items():
-            for col in range(2):
-                for el in range(nbits):
-                    curr_elm = payload[key][f'col_{col}'][el]
-                    # if the bit is 1
-                    if curr_elm[2] == 1:
-                        print(f"key: {key}, \
-                              x: {curr_elm[0]}, \
-                              y: {curr_elm[1]}, \
-                              col: {col}")
-                        # disp.pixel(curr_elm[0], curr_elm[1], col)
-    else:
-        for col in range(len(payload)):
-            for el in range(nbits):
-                curr_elm = payload[f'col_{col}'][el]
-                if curr_elm[2] == 1:
-                    print(f"x: {curr_elm[0]}, \
-                          y: {curr_elm[1]}, \
-                          col: {col}")
-                    # disp.pixel(curr_elm[0], curr_elm[1], col)
+    r, g, b = rgb
+    cnt = 0
+    for key, val in payload.items():
+        for i, el in enumerate(val):
+            # if the bit is 1
+            if el == 1:
+                print(f"key: {key}, \
+                      i: {i}, \
+                      cnt: {cnt}")
+                # pixels[cnt] = (r,g,b)
+            cnt += 1
 
 def change_freeze_time(other_datetime, freezetime):
     # stop current frozen time
@@ -145,14 +134,6 @@ def sync_time(tzone, freezetime):
     other_datetime = datetime(year=year, month=month, day=mday,
                                        hour=hours, minute=minutes, second=seconds)
     new_datetime = change_freeze_time(other_datetime, freezetime)
-    # time_string = datetime(*time_tuple).isoformat()
-    # subprocess.call(shlex.split("timedatectl set-ntp false"))  # May be necessary
-    # subprocess.call(shlex.split("date -s '%s'" % time_string))
-    # hwclock also called Real Time Clock (RTC), is a utility for accessing the hardware clock
-    # -w, -systohoc : It will set the RTC from the system time
-    # subprocess.call(shlex.split("hwclock -w"))
-    # output = subprocess.check_output(shlex.split("date"))
-    # print(f'Date output: {new_datetime}')
     return {'DATE': new_datetime, 'TIME_UNITS' : time_tuple}
 
 def get_current_time():
@@ -166,12 +147,3 @@ def get_current_time():
     """
     dt = datetime.now()
     return  (dt.hour, dt.minute, dt.second)
-
-
-# if __name__ == "__main__":
-    # pprint.pprint(binary_output((10,30,15)))
-    # pprint.pprint(bcd_output((10,30,15)))
-    # data = bcd_output((10,30,15))
-    # data = binary_output((10,30,15))
-    # pprint.pprint(data)
-    # display_leds(data)
