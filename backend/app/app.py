@@ -1,9 +1,12 @@
-from fastapi import FastAPI, status, Query, Path
-from fastapi.exceptions import HTTPException
+from fastapi import FastAPI, status, Query, Path, WebSocket
+from fastapi.exceptions import HTTPException, WebSocketException
 # from app.RPi_I2C_driver import *
 from os import getenv
+from re import match
+from json import dumps, loads
 from fastapi.middleware.cors import CORSMiddleware
 from app.functions import *
+from fastapi.responses import HTMLResponse
 
 app = FastAPI()
 
@@ -92,17 +95,30 @@ async def binary_clock(tzone: str = Query(...), clock_type: str = Query(min_leng
     elif clock_type == 'bcd':
         data = bcd_output((hour, minute, seconds))
     # data.update(output_datetime_dct)
-    # display_leds(data)
+    # display_leds(data, neopixel, rgb)
     return data
 
-@app.get("/ctime")
-async def current_time(clock_type: str = Query(min_length=3, max_length=6)):
-    hour, minute, seconds = get_current_time()
-    if clock_type == 'binary':
-        data = binary_output((hour, minute, seconds), unit_time_dct[clock_type])
-    elif clock_type == 'bcd':
-        data = bcd_output((hour, minute, seconds))
-    return data
+# @app.get("/ctime")
+@app.websocket("/ctime")
+async def current_time(websocket: WebSocket):
+    await websocket.accept()
+    while True:
+        clock_type = await websocket.receive_text()
+        clock_type = clock_type.strip()
+        if not match('[binary|bcd]', clock_type):
+            print(f'socket message must either be binary or bcd, not {clock_type}')
+            raise WebSocketException(code=status.WS_1008_POLICY_VIOLATION)
+        hour, minute, seconds = get_current_time()
+        if clock_type == 'binary':
+            data = binary_output((hour, minute, seconds), unit_time_dct[clock_type])
+        elif clock_type == 'bcd':
+            data = bcd_output((hour, minute, seconds))
+        else:
+            # raise HTTPException(status_code=404, detail=f"Please select a valid clock type, {clock_type} does not exist")
+            raise WebSocketException(code=status.WS_1008_POLICY_VIOLATION)
+    # return data
+        print(data)
+        await websocket.send_text(dumps(data))
 
 @app.get("/tzones")
 async def time_zones():
