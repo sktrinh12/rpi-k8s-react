@@ -1,5 +1,8 @@
-import React, { useEffect, useState } from "react";
-import Screen from "./Screen";
+import React, { useEffect, useState, useRef } from "react";
+import ScreenTwo from "./ScreenTwo";
+import ClockType from "./ClockType";
+import Timezone from "./Timezone";
+import Tempdata from "./Tempdata";
 
 const range = (start, end, step) => {
   return Array.from(
@@ -11,29 +14,37 @@ const range = (start, end, step) => {
 const baseURL = process.env.REACT_APP_BACKEND_URL ?? "http://localhost:8000";
 const wsURL = `ws${baseURL.substring(4, baseURL.length)}/ctime`;
 const tzoneURL = `${baseURL}/tzones`;
-const yStart = 15;
-const yStep = 55;
-const xStep = 75;
+const width = 100;
+const height = 97;
 let timeZones = ["Asia/Ho_Chi_Minh"];
-let ws = new WebSocket(wsURL);
+let timer;
 
 const Clock = () => {
-  const clockType = "bcd";
   const [tzone, setTzone] = useState("Asia/Ho_Chi_Minh");
-  const [data, setData] = useState({});
+  const [data, setData] = useState(Tempdata);
+  const [clockType, setClockType] = useState("bcd");
   const dataLength = Object.keys(data).length;
+  const ws = useRef(null);
   // if bcd is selected need 6 columns (keys) HH:MM:SS
-  let xStart = 55; // starting x coordinate
-  let numRows = 6;
-  let numColumns = 4;
+  let numCirclesX = 6;
+  let numCirclesY = 4;
   // if binary is selected only need three columns (keys) H:M:S
   if (dataLength === 3) {
-    xStart = 225;
-    numRows = 3; // looking at it 90 degree flipped
-    numColumns = 7;
+    numCirclesX = 3;
+    numCirclesY = 7;
   }
-  const arrayRows = range(xStart, xStart + numRows * xStep, xStep);
-  const arrayColumns = range(yStart, yStep * numColumns, yStep);
+  const XSpacing = width / (numCirclesX + 1);
+  const YSpacing = height / (numCirclesY + 1);
+  const arrayColumns = range(
+    YSpacing,
+    YSpacing + numCirclesY * YSpacing,
+    YSpacing
+  );
+  const arrayRows = range(
+    XSpacing,
+    XSpacing + numCirclesX * XSpacing,
+    XSpacing
+  );
   // console.log(arrayColumns);
   // console.log(arrayRows);
 
@@ -52,18 +63,23 @@ const Clock = () => {
     }
   };
 
-  const initWebSocket = () => {
-    ws.onopen = (event) => {
-      ws.send(clockType); // pass to backend
+  const initWebSocket = (socket) => {
+    socket.onopen = (event) => {
+      console.log("websocket open");
     };
 
-    ws.onmessage = (event) => {
+    socket.onmessage = (event) => {
       const json = JSON.parse(event.data);
       setData(json);
     };
 
-    ws.onclose = () => {
-      initWebSocket();
+    socket.onclose = (event) => {
+      console.log("websocket closed");
+    };
+
+    socket.onerror = (err) => {
+      console.error(`Socket encountered error: ${err.message}; closing socket`);
+      socket.close();
     };
   };
 
@@ -99,42 +115,53 @@ const Clock = () => {
 
   // time zone submit button
   const onClickSubmit = () => {
+    if (timer) {
+      clearInterval(timer);
+    }
     console.log(`tzone: ${tzone}`);
     getDiffTime();
-    ws.send(clockType);
+    console.log(`clock: ${clockType}`);
+    // console.log(`time: ${}`);
+    timer = setInterval(() => {
+      ws.current.send(clockType);
+    }, 1000);
+  };
+
+  const handleClockDropdownChange = (e) => {
+    setClockType(e.target.value);
   };
 
   // initialise websocket on mount
   useEffect(() => {
-    initWebSocket();
+    const socket = new WebSocket(wsURL);
     getTzones();
+    ws.current = socket;
+    initWebSocket(socket);
     return () => {
-      ws.close();
-    };
-    // eslint-disable-next-line
-  }, []);
-
-  // just get the first time from timeapi.io; then get current time every sec
-  useEffect(() => {
-    getDiffTime();
-    let everySecond = setInterval(() => ws.send(clockType), 1000);
-    return () => {
-      clearInterval(everySecond);
+      socket.close();
     };
     // eslint-disable-next-line
   }, []);
 
   return (
     <>
-      <Screen data={data} arrayColumns={arrayColumns} arrayRows={arrayRows} />
-      <label for="timezones">Time Zones:</label>&nbsp;&nbsp;
-      <input list="timezones" onChange={searchTimeZone} placeholder={tzone} />
-      <datalist id="timezones" name="timezones">
-        {timeZones.map((tz) => {
-          return <option key={tz} value={tz} />;
-        })}
-      </datalist>
-      <button onClick={onClickSubmit}>Submit</button>
+      <ScreenTwo
+        data={data}
+        arrayColumns={arrayColumns}
+        arrayRows={arrayRows}
+      />
+      <div className="dropdown-style">
+        <Timezone
+          timeZones={timeZones}
+          tzone={tzone}
+          searchTimeZone={searchTimeZone}
+        />
+        <ClockType
+          clockType={clockType}
+          handleClockDropdownChange={handleClockDropdownChange}
+        />
+      </div>
+      <button onClick={onClickSubmit}>Get Time!</button>
     </>
   );
 };
