@@ -1,6 +1,6 @@
 import React from "react";
 
-const LedTwo = ({ colour, x, y, r }) => {
+const Led = ({ colour, x, y, r }) => {
   return (
     <>
       <circle
@@ -36,4 +36,4 @@ const LedTwo = ({ colour, x, y, r }) => {
   );
 };
 
-export default LedTwo;
+export default Led;
