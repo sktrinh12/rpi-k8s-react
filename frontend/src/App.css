@@ -8,6 +8,10 @@
   cursor: text;
 }
 
+.clock-class {
+  font-family: digital-display;
+}
+
 .text-cursor {
   opacity: 0;
 }
