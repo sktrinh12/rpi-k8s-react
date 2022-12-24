@@ -1,14 +1,16 @@
-from fastapi import FastAPI, status, Query, Path, WebSocket
+from fastapi import FastAPI, status, Query, Path
 from fastapi.exceptions import HTTPException, WebSocketException
 # from app.RPi_I2C_driver import *
 from os import getenv
 from re import match
 from json import dumps, loads
+from app.socketmanager import *
 from fastapi.middleware.cors import CORSMiddleware
 from app.functions import *
 from fastapi.responses import HTMLResponse
 
 app = FastAPI()
+socket_manager = SocketManager()
 
 # for cors
 origins = [
@@ -90,35 +92,38 @@ async def binary_clock(tzone: str = Query(...), clock_type: str = Query(min_leng
     hour = time_tuple[3]
     minute = time_tuple[4]
     seconds = time_tuple[5]
+    time_units = {'hour':"%02d"%hour, 'minute':"%02d"%minute, 'seconds':"%02d"%seconds}
     if clock_type == 'binary':
         data = binary_output((hour, minute, seconds), unit_time_dct[clock_type])
     elif clock_type == 'bcd':
         data = bcd_output((hour, minute, seconds))
     # data.update(output_datetime_dct)
     # display_leds(data, neopixel, rgb)
-    return data
+    return {**data, **time_units}
 
-# @app.get("/ctime")
 @app.websocket("/ctime")
 async def current_time(websocket: WebSocket):
-    await websocket.accept()
-    while True:
-        clock_type = await websocket.receive_text()
-        clock_type = clock_type.strip()
-        if not match('[binary|bcd]', clock_type):
-            print(f'socket message must either be binary or bcd, not {clock_type}')
-            raise WebSocketException(code=status.WS_1008_POLICY_VIOLATION)
-        hour, minute, seconds = get_current_time()
-        if clock_type == 'binary':
-            data = binary_output((hour, minute, seconds), unit_time_dct[clock_type])
-        elif clock_type == 'bcd':
-            data = bcd_output((hour, minute, seconds))
-        else:
-            # raise HTTPException(status_code=404, detail=f"Please select a valid clock type, {clock_type} does not exist")
-            raise WebSocketException(code=status.WS_1008_POLICY_VIOLATION)
-    # return data
-        print(data)
-        await websocket.send_text(dumps(data))
+    await socket_manager.connect(websocket)
+    try:
+        while True:
+            clock_type = await websocket.receive_text()
+            clock_type = clock_type.strip()
+            if not match('[binary|bcd]', clock_type):
+                print(f'socket message must either be binary or bcd, not {clock_type}')
+                raise WebSocketException(code=status.WS_1008_POLICY_VIOLATION)
+            hour, minute, seconds = get_current_time()
+            time_units = {'hour':"%02d"%hour, 'minute':"%02d"%minute, 'seconds':"%02d"%seconds}
+            if clock_type == 'binary':
+                data = binary_output((hour, minute, seconds), unit_time_dct[clock_type])
+            elif clock_type == 'bcd':
+                data = bcd_output((hour, minute, seconds))
+            data = {**data, **time_units}
+            print(data)
+            await socket_manager.send_data(dumps(data), websocket)
+    except WebSocketDisconnect:
+        # await websocket.close()
+        socket_manager.disconnect(websocket)
+        await socket_manager.broadcast('websocket disconnect')
 
 @app.get("/tzones")
 async def time_zones():
