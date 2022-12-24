@@ -10,7 +10,7 @@ const colours = {
 
 const r = 4.25;
 
-const Screen = ({ data, arrayColumns, arrayRows }) => {
+const Screen = ({ bitsData, timeData, arrayColumns, arrayRows }) => {
   return (
     <svg
       xmlns="http://www.w3.org/2000/svg"
@@ -60,14 +60,15 @@ const Screen = ({ data, arrayColumns, arrayRows }) => {
         strokeWidth="3"
       />
       <>
-        {Object.values(data).map((vals, i) => {
+        {/* bit data */}
+        {Object.values(bitsData).map((bits, i) => {
           // 3 or 6 keys
           return (
-            <React.Fragment key={`frag_${i}`}>
-              {vals.map((bit, j) => {
+            <React.Fragment key={`bit_frag_${i}`}>
+              {bits.map((bit, j) => {
                 // 4 or 7 elements
                 return (
-                  <LedTwo
+                  <Led
                     key={`led_${i}${j}`}
                     colour={bit === 1 ? colours["green"] : colours["grey"]}
                     x={arrayRows[i]}
@@ -76,6 +77,21 @@ const Screen = ({ data, arrayColumns, arrayRows }) => {
                   />
                 );
               })}
+            </React.Fragment>
+          );
+        })}
+        {/* time units */}
+        {timeData.map((digit, j) => {
+          return (
+            <React.Fragment key={`digit_frag_${j}`}>
+              <text
+                x={arrayRows[j]}
+                y={arrayColumns[timeData.length === 6 ? 3 : 6]}
+                baselineShift="-10px"
+                textAnchor="middle"
+              >
+                {digit}
+              </text>
             </React.Fragment>
           );
         })}

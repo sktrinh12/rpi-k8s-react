@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useRef } from "react";
-import ScreenTwo from "./ScreenTwo";
+import Screen from "./Screen";
 import ClockType from "./ClockType";
 import Timezone from "./Timezone";
 import Tempdata from "./Tempdata";
@@ -9,6 +9,33 @@ const range = (start, end, step) => {
     { length: Math.ceil((end - start) / step) },
     (e, x) => start + x * step
   );
+};
+
+const regexFilter = (pattern, json) => {
+  const regex = new RegExp(pattern);
+  return Object.keys(json)
+    .filter((key) => regex.test(key))
+    .reduce((obj, key) => {
+      return Object.assign(obj, {
+        [key]: json[key],
+      });
+    }, {});
+};
+
+const returnTimeDigits = (timeData, nbr) => {
+  let timeDigits;
+  if (nbr === 3) {
+    // if bitsData contains 3 elements for 'binary' - H:M:S
+    timeDigits = [timeData.hour, timeData.minute, timeData.seconds];
+  } else {
+    // if bitsData contains 6 elements for 'bcd' - HH:MM:SS
+    timeDigits = [
+      ...timeData.hour.split(""),
+      ...timeData.minute.split(""),
+      ...timeData.seconds.split(""),
+    ];
+  }
+  return timeDigits;
 };
 
 const baseURL = process.env.REACT_APP_BACKEND_URL ?? "http://localhost:8000";
@@ -21,9 +48,10 @@ let timer;
 
 const Clock = () => {
   const [tzone, setTzone] = useState("Asia/Ho_Chi_Minh");
-  const [data, setData] = useState(Tempdata);
+  const [bitsData, setBitsData] = useState(Tempdata);
   const [clockType, setClockType] = useState("bcd");
-  const dataLength = Object.keys(data).length;
+  const [timeData, setTimeData] = useState(["0", "0", "0", "0", "0", "0"]);
+  const dataLength = Object.keys(regexFilter("^H|^M|^S", bitsData)).length;
   const ws = useRef(null);
   // if bcd is selected need 6 columns (keys) HH:MM:SS
   let numCirclesX = 6;
@@ -55,8 +83,16 @@ const Clock = () => {
       let fetched = await fetch(backendURL);
       if (fetched) {
         let json = await fetched.json();
-        // console.log(json);
-        setData(json);
+        const bitData = regexFilter("^H|^M|^S", json);
+        setBitsData(bitData);
+        const timeData = regexFilter("^hour|^minute|^seconds", json);
+        const timeDigits = returnTimeDigits(
+          timeData,
+          Object.keys(bitData).length
+        );
+        setTimeData(timeDigits);
+        // console.log(timeData);
+        // console.log(bitsData);
       }
     } catch (error) {
       throw new Error(error.message);
@@ -70,7 +106,15 @@ const Clock = () => {
 
     socket.onmessage = (event) => {
       const json = JSON.parse(event.data);
-      setData(json);
+      const bitData = regexFilter("^H|^M|^S", json);
+      const timeData = regexFilter("^hour|^minute|^seconds", json);
+      const timeDigits = returnTimeDigits(
+        timeData,
+        Object.keys(bitData).length
+      );
+      setTimeData(timeDigits);
+      setBitsData(bitData);
+      // console.log(bitsData);
     };
 
     socket.onclose = (event) => {
@@ -121,7 +165,6 @@ const Clock = () => {
     console.log(`tzone: ${tzone}`);
     getDiffTime();
     console.log(`clock: ${clockType}`);
-    // console.log(`time: ${}`);
     timer = setInterval(() => {
       ws.current.send(clockType);
     }, 1000);
@@ -145,8 +188,9 @@ const Clock = () => {
 
   return (
     <>
-      <ScreenTwo
-        data={data}
+      <Screen
+        timeData={timeData}
+        bitsData={bitsData}
         arrayColumns={arrayColumns}
         arrayRows={arrayRows}
       />
