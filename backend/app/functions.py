@@ -56,7 +56,10 @@ def binary_output(input_ints, unit_time):
             input_bit = input_bit >> 1
         # reverse the order so it shows up properly on frontend
         payload[unit_time[i]] = array_vals[::-1]
-    return payload
+
+    time_units = {'hour':"%02d"%input_ints[0], 'minute':"%02d"%input_ints[1],
+                  'seconds':"%02d"%input_ints[2]}
+    return {**payload, **time_units}
 
 def bcd_output(input_ints):
     """
@@ -77,7 +80,9 @@ def bcd_output(input_ints):
     # modulus all by 10
     time_digits[1::2] = list(map(lambda x: x % 10, input_ints))
     payload = binary_output(time_digits, unit_time_dct['bcd'])
-    return payload
+    time_units = {'hour':"%02d"%input_ints[0], 'minute':"%02d"%input_ints[1],
+                  'seconds':"%02d"%input_ints[2]}
+    return {**payload, **time_units}
 
 
 def display_leds(payload, pixels, rgb):
@@ -107,14 +112,14 @@ def change_freeze_time(other_datetime, freezetime):
     # define new frozen time
     freezetime = freeze_time(other_datetime, tick=True)
     freezetime.start()
-    ts = datetime.now().strftime('%Y-%b-%dT%H:%M:%S')
-    return ts
+    # ts = datetime.now().strftime('%Y-%b-%dT%H:%M:%S')
+    # return ts
 
 
 def sync_time(tzone, freezetime):
     """
     input - tzone: str, the time zone
-    output - dictionary, the datetime string and the timestamp
+    output - tuple, the timestamp as integer numbers
     synchronise the system time with the worldtimeapi time based on
     user's input for timezone
     """
@@ -133,8 +138,8 @@ def sync_time(tzone, freezetime):
     time_tuple = (year, month, mday, hours, minutes, seconds)
     other_datetime = datetime(year=year, month=month, day=mday,
                                        hour=hours, minute=minutes, second=seconds)
-    new_datetime = change_freeze_time(other_datetime, freezetime)
-    return {'DATE': new_datetime, 'TIME_UNITS' : time_tuple}
+    change_freeze_time(other_datetime, freezetime)
+    return time_tuple
 
 def get_current_time():
     """
