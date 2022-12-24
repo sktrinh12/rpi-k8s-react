@@ -5,6 +5,9 @@ const Tempdata = {
   M_: [0, 0, 0, 0],
   S: [0, 0, 0, 0],
   S_: [0, 0, 0, 0],
+  hour: "00",
+  minute: "00",
+  seconds: "00",
 };
 
 export default Tempdata;
