@@ -87,19 +87,17 @@ async def binary_clock(tzone: str = Query(...), clock_type: str = Query(min_leng
         raise HTTPException( status_code=409, detail=f"That timezone does not exist, {tzone}")
     if clock_type not in clock_types:
         raise HTTPException( status_code=409, detail=f"Clock-type must be either {' or '.join(clock_types)}, {clock_type} is invalid")
-    output_datetime_dct = sync_time(tzone, freezetime)
-    time_tuple = output_datetime_dct['TIME_UNITS']
+    time_tuple = sync_time(tzone, freezetime)
     hour = time_tuple[3]
     minute = time_tuple[4]
     seconds = time_tuple[5]
-    time_units = {'hour':"%02d"%hour, 'minute':"%02d"%minute, 'seconds':"%02d"%seconds}
     if clock_type == 'binary':
         data = binary_output((hour, minute, seconds), unit_time_dct[clock_type])
     elif clock_type == 'bcd':
         data = bcd_output((hour, minute, seconds))
     # data.update(output_datetime_dct)
     # display_leds(data, neopixel, rgb)
-    return {**data, **time_units}
+    return data
 
 @app.websocket("/ctime")
 async def current_time(websocket: WebSocket):
@@ -112,12 +110,10 @@ async def current_time(websocket: WebSocket):
                 print(f'socket message must either be binary or bcd, not {clock_type}')
                 raise WebSocketException(code=status.WS_1008_POLICY_VIOLATION)
             hour, minute, seconds = get_current_time()
-            time_units = {'hour':"%02d"%hour, 'minute':"%02d"%minute, 'seconds':"%02d"%seconds}
             if clock_type == 'binary':
                 data = binary_output((hour, minute, seconds), unit_time_dct[clock_type])
             elif clock_type == 'bcd':
                 data = bcd_output((hour, minute, seconds))
-            data = {**data, **time_units}
             print(data)
             await socket_manager.send_data(dumps(data), websocket)
     except WebSocketDisconnect:
