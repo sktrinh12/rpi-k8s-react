@@ -3,6 +3,16 @@
   text-align: center;
 }
 
+.wrapper {
+  text-align: center;
+  padding-top: 10px;
+}
+
+.colourpicker {
+  display: inline-block;
+  vertical-align: top;
+}
+
 .lcd-class {
   font-family: digital-display;
   cursor: text;
@@ -36,6 +46,8 @@
   border-radius: 4px;
   overflow: hidden;
   position: relative;
+  display: inline-block;
+  vertical-align: top;
 }
 
 .dropdown-style select {
@@ -56,7 +68,7 @@
   top: 70%;
   left: 90%;
   border: solid transparent;
-  content: " ";
+  content: ' ';
   height: 0;
   width: 0;
   position: absolute;
