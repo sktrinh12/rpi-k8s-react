@@ -1,5 +1,7 @@
 import React from 'react'
 import Led from './Led'
+import Digits from './Digits'
+import SVGDefs from './SVGDefs'
 
 const r = 4.25
 
@@ -74,52 +76,7 @@ const Screen = ({ timeData, colour }) => {
       viewBox='0 0 100 100'
     >
       <defs>
-        <linearGradient id='linearGradient1582'>
-          <stop stopColor='#191919' stopOpacity='0.95' offset='0' />
-          <stop stopColor='#323232' stopOpacity='1' offset='1' />
-        </linearGradient>
-        <radialGradient
-          xlinkHref='#linearGradient1582'
-          id='radialGradient1576'
-          cx='50%'
-          cy='50%'
-          fx='50%'
-          fy='50%'
-          r='50%'
-        />
-        {/* ELLIPSE GRADIENT FOR LEDS */}
-        <radialGradient
-          id='radialGradient1078'
-          cx='5%'
-          cy='5%'
-          fx='2%'
-          fy='2%'
-          r='4%'
-        >
-          <stop stopColor='#EAEAEA' stopOpacity='0' offset='1' />
-          <stop stopColor='#EAEAEA' stopOpacity='0.18' offset='0' />
-        </radialGradient>
-        {/* LED GLOW EFFECT */}
-        <filter id='led-glow' height='250%' width='250%' x='-75%' y='-75%'>
-          <feMorphology
-            operator='dilate'
-            radius='0.5'
-            in='SourceAlpha'
-            result='thicken'
-          />
-          <feGaussianBlur in='thicken' stdDeviation='1.2' result='blurred' />
-          <feFlood floodColor={colour} result='glowColor' />
-          <feComposite
-            in='glowColor'
-            in2='blurred'
-            operator='in'
-            result='glow_colored'
-          />
-          <feMerge>
-            <feMergeNode in='glow_colored' />
-            <feMergeNode in='SourceGraphic' />
-          </feMerge>
-        </filter>
+        <SVGDefs colour={colour} />
       </defs>
       <rect
         y='1.5'
@@ -158,15 +115,12 @@ const Screen = ({ timeData, colour }) => {
         {timeDigits.map((digit, j) => {
           return (
             <React.Fragment key={`digit_frag_${j}`}>
-              <text
+              <Digits
                 x={arrayRows[j]}
                 y={arrayColumns[timeDigits.length === 6 ? 3 : 6] + 18}
-                textAnchor='middle'
-                fill={colour}
-                className={'clock-class'}
-              >
-                {digit}
-              </text>
+                colour={colour}
+                digit={digit}
+              />
             </React.Fragment>
           )
         })}

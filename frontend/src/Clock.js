@@ -27,7 +27,7 @@ const Clock = () => {
   const [tzone, setTzone] = useState('Asia/Ho_Chi_Minh')
   const [timeData, setTimeData] = useState(Tempdata)
   const [clockType, setClockType] = useState('bcd')
-  const [colour, setColour] = useState(paletteColours[5])
+  const [colour, setColour] = useState('#BCBCBC')
   const ws = useRef(null)
 
   const handleChangeColour = (color) => {
